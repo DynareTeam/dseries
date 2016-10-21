@@ -99,6 +99,7 @@ classdef dseries<handle % --*-- Unitary tests --*--
                         [data, init, varlist] = fame.getall.timeseries(db);
                         fame.close.database(db);
                         fame.close.connector(FameInfo);
+                        tex = [];
                     else
                         error('dseries:WrongInputArguments', 'I''m not able to load data from %s!', varargin{1});
                     end
