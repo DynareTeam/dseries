@@ -45,3 +45,13 @@ end
 if isoctave && ~exist('user_has_octave_forge_package','file')
     addpath([dseries_src_root '/utilities/missing/user_has_octave_forge_package'])
 end
+
+% Add matlab-fame-io (fame connector toolbox) if available.
+if exist([dseries_src_root '/modules/matlab-fame-io'])
+    addpath([dseries_src_root '/modules/matlab-fame-io'])
+    if exist([dseries_src_root '/modules/matlab-fame-io/locals.m'])
+        initialize_fame_toolbox();
+    else
+        warning('matlab-fame-io submodule is not properly configured!')
+    end
+end

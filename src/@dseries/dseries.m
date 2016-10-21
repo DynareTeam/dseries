@@ -92,6 +92,13 @@ classdef dseries<handle % --*-- Unitary tests --*--
                         end
                         [freq,init,data,varlist] = load_xls_file_data(varargin{1}, sheet, range);
                         tex = [];
+                    elseif check_file_extension(varargin{1},'db')
+                        % Fame database (need to have matlab-fame-io submodule and TimeIQ installed)
+                        FameInfo = fame.open.connector();
+                        db = fame.open.database(FameInfo, varargin{1});
+                        [data, init, varlist] = fame.getall.timeseries(db);
+                        fame.close.database(fid);
+                        fame.close.connector(FameInfo);
                     else
                         error('dseries:WrongInputArguments', 'I''m not able to load data from %s!', varargin{1});
                     end
