@@ -1,4 +1,4 @@
-function b = isnan(o)
+function b = isnan(o) % --*-- Unitary tests --*--
 
 % Returns an array of logicals (true/false). Element (t,i) is true iff the i-th variable at
 % period number t is not a NaN.
@@ -28,3 +28,24 @@ function b = isnan(o)
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
 b = isnan(o.data);
+
+%@test:1
+%$ try
+%$     data = randn(100, 10);
+%$     cnan = randi(10, 50, 1);
+%$     rnan = randi(100, 50, 1);
+%$     for i=1:50, data(rnan(i),cnan(i)) = NaN; end
+%$     inan = isnan(data);
+%$     ts = dseries(data);
+%$     dd = ts.isnan();
+%$     t(1) = true;
+%$ catch
+%$     t(1) = false;
+%$ end
+%$
+%$ if t(1)
+%$     t(2) = isequal(dd, inan);
+%$ end
+%$
+%$ T = all(t);
+%@eof:1

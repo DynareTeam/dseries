@@ -70,7 +70,7 @@ switch S(1).type
             error(['dseries::subsref: ' S(1).subs ' is not a method but a member!'])
         end
         B = builtin('subsref', A, S(1));
-      case {'log','log_','exp','exp_','ygrowth','qgrowth','ydiff','qdiff','abs'}         % Give "dot access" to public methods without args.
+      case {'log','log_','exp','exp_','ygrowth','qgrowth','ydiff','qdiff','abs','isnan','firstdate','firstobservedperiod'}  % Give "dot access" to public methods without args.
         B = feval(S(1).subs,A);
         if length(S)>1 && isequal(S(2).type,'()') && isempty(S(2).subs)
             S = shiftS(S,1);
@@ -90,7 +90,7 @@ switch S(1).type
       case 'freq'
         % Returns an integer characterizing the data frequency (1, 4, 12 or 52)
         B = A.dates.freq;
-      case {'lag','lead','hptrend','hpcycle','chain','detrend','exist','mean','std','center','firstobservedperiod'} % Methods with less than two arguments.
+      case {'lag','lead','hptrend','hpcycle','chain','detrend','exist','mean','std','center'} % Methods with less than two arguments.
         if length(S)>1 && isequal(S(2).type,'()')
             if isempty(S(2).subs)
                 B = feval(S(1).subs,A);

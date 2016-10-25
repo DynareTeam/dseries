@@ -1,6 +1,6 @@
-function f = firstdate(o)
+function f = firstdate(o) % --*-- Unitary tests --*--
 
-% Copyright (C) 2014 Dynare Team
+% Copyright (C) 2016 Dynare Team
 %
 % This file is part of Dynare.
 %
@@ -18,3 +18,19 @@ function f = firstdate(o)
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
 f = o.dates(1);
+
+%@test:1
+%$ try
+%$     ts = dseries(randn(10, 3),'1938Q3');
+%$     dd = ts.firstdate();
+%$     t(1) = true;
+%$ catch
+%$     t(1) = false;
+%$ end
+%$
+%$ if t(1)
+%$     t(2) = isequal(dd, dates('1938Q3'));
+%$ end
+%$
+%$ T = all(t);
+%@eof:1
