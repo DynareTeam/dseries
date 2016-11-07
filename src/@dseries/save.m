@@ -91,6 +91,10 @@ switch format
         fprintf(fid, '%s%s\n',date2string(A.dates(t)),str);
     end
     fclose(fid);
+  case 'fame'
+    fame.write([basename '.db'], A);
+  otherwise
+    error('Unknown format!')
 end
 
 %@test:1
