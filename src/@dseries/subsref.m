@@ -105,7 +105,7 @@ switch S(1).type
         else
             B = feval(S(1).subs,A);
         end
-      case {'cumsum','insert','pop','cumprod','remove'} % Methods with less than three argument.
+      case {'cumsum','insert','pop','cumprod','remove','time_aggregate', 'time_disaggregate'} % Methods with less than three argument.
         if length(S)>1 && isequal(S(2).type,'()')
             if isempty(S(2).subs)
                 B = feval(S(1).subs,A);
