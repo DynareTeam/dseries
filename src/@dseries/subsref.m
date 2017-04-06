@@ -45,7 +45,7 @@ function B = subsref(A, S) % --*-- Unitary tests --*--
 %! @end deftypefn
 %@eod:
 
-% Copyright (C) 2011-2016 Dynare Team
+% Copyright (C) 2011-2017 Dynare Team
 %
 % This file is part of Dynare.
 %
@@ -70,7 +70,7 @@ switch S(1).type
             error(['dseries::subsref: ' S(1).subs ' is not a method but a member!'])
         end
         B = builtin('subsref', A, S(1));
-      case {'log','log_','exp','exp_','ygrowth','qgrowth','ydiff','qdiff','abs','isnan','firstdate','firstobservedperiod'}  % Give "dot access" to public methods without args.
+      case {'log','log_','exp','exp_','ygrowth','qgrowth','ydiff','qdiff','abs','isnan','firstdate','firstobservedperiod','lastobservedperiod'}  % Give "dot access" to public methods without args.
         B = feval(S(1).subs,A);
         if length(S)>1 && isequal(S(2).type,'()') && isempty(S(2).subs)
             S = shiftS(S,1);
