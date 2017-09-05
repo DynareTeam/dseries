@@ -61,10 +61,12 @@ switch nargin
             o.data = cumprodnan(o.data);
         end
     end
-    % Change the name of the variables
     for i=1:vobs(o)
-        o.name(i) = {['cumprod(' o.name{i} ')']};
-        o.tex(i) = {['\prod_t ' o.tex{i}]};
+        if isempty(o.ops{i})
+            o.ops(i) = {['cumprod(' o.name{i} ')']};
+        else
+            o.ops(i) = {['cumprod(' o.ops{i} ')']};
+        end
     end
   case 2
     if isdseries(varargin{2})
@@ -146,7 +148,8 @@ end
 %$
 %$ if t(1)
 %$     t(2) = isequal(ts.data, cumprod(A));
-%$     t(3) = isequal(ts.name{1}, 'cumprod(A1)');
+%$     t(3) = isequal(ts.name{1}, 'A1');
+%$     t(4) = isequal(ts.ops{1}, 'cumprod(A1)');
 %$ end
 %$
 %$ T = all(t);
@@ -171,8 +174,9 @@ end
 %$ end
 %$
 %$ if t(1)
-%$     t(2) = isequal(ts.data,cumprod(A));
-%$     t(3) = isequal(ts.name{1},'cumprod(A1)');
+%$     t(2) = isequal(ts.data, cumprod(A));
+%$     t(3) = isequal(ts.name{1},'A1');
+%$     t(4) = isequal(ts.ops{1}, 'cumprod(A1)');
 %$ end
 %$
 %$ T = all(t);

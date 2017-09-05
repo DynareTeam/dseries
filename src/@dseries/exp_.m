@@ -28,8 +28,11 @@ function o = exp_(o) % --*-- Unitary tests --*--
 o.data = exp(o.data);
 
 for i=1:vobs(o)
-    o.name(i) = {['exp(' o.name{i} ')']};
-    o.tex(i) = {['\exp(' o.tex{i} ')']};
+    if isempty(o.ops{i})
+        o.ops(i) = {['exp(' o.name{i} ')']};
+    else
+        o.ops(i) = {['exp(' o.ops{i} ')'];}
+    end
 end
 
 %@test:1
@@ -73,12 +76,18 @@ end
 %$
 %$ if t(1)
 %$      t(2) = dassert(length(o.name), 2);
-%$      t(3) = dassert(o.name{1},'exp(Variable_1)');
-%$      t(4) = dassert(o.name{2},'exp(Variable_2)');
-%$      t(5) = dassert(q.name{1},'exp(Variable_1)');
-%$      t(6) = dassert(q.name{2},'exp(Variable_2)');
-%$      t(7) = dassert(r.name{1},'Variable_1');
-%$      t(8) = dassert(r.name{2},'Variable_2');
+%$      t(3) = dassert(o.name{1},'Variable_1');
+%$      t(4) = dassert(o.name{2},'Variable_2');
+%$      t(5) = dassert(q.name{1},'Variable_1');
+%$      t(6) = dassert(q.name{2},'Variable_2');
+%$      t(7) = dassert(o.ops{1},'exp(Variable_1)');
+%$      t(8) = dassert(o.ops{2},'exp(Variable_2)');
+%$      t(9) = dassert(q.ops{1},'exp(Variable_1)');
+%$      t(10) = dassert(q.ops{2},'exp(Variable_2)');
+%$      t(11) = dassert(r.name{1},'Variable_1');
+%$      t(12) = dassert(r.name{2},'Variable_2');
+%$      t(13) = isempty(r.ops{1});
+%$      t(14) = isempty(r.ops{2});
 %$ end
 %$
 %$ T = all(t);

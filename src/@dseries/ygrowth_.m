@@ -29,34 +29,27 @@ switch frequency(o)
   case 1
     o.data(2:end,:) = o.data(2:end,:)./o.data(1:end-1,:) - 1;
     o.data(1,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['ygrowth(' o.name{i} ')']};
-        o.tex(i) = {['\delta ' o.tex{i}]};
-    end
   case 4
     o.data(5:end,:) = o.data(5:end,:)./o.data(1:end-4,:) - 1;
     o.data(1:4,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['ygrowth(' o.name{i} ')']};
-        o.tex(i) = {['\delta_4 ' o.tex{i}]};
-    end
   case 12
     o.data(13:end,:) = o.data(13:end,:)./o.data(1:end-12,:) - 1;
     o.data(1:12,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['ygrowth(' o.name{i} ')']};
-        o.tex(i) = {['\delta_{12} ' o.tex{i}]};
-    end
   case 52
     o.data(53:end,:) = o.data(53:end,:)./o.data(1:end-52,:) - 1;
     o.data(1:52,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['ygrowth(' o.name{i} ')']};
-        o.tex(i) = {['\delta_{52} ' o.tex{i}]};
-    end
   otherwise
     error(['dseries::ygrowth: object ' inputname(1) ' has unknown frequency']);
 end
+
+for i = 1:vobs(o)
+    if isempty(o.ops{i})
+        o.ops(i) = {['ygrowth(' o.name{i} ')']};
+    else
+        o.ops(i) = {['ygrowth(' o.ops{i} ')']};
+    end
+end
+
 
 %@test:1
 %$ try

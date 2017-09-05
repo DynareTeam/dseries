@@ -94,8 +94,19 @@ o.data = tmp(K+1:end-K,:);
 init = firstdate(o)+K;
 o.dates = init:init+(nobs(o)-1);
 for i=1:vobs(o)
-    o.name(i) = {['baxter_king_filter(' o.name{i} ')']};
-    o.tex(i) = {['\text{baxter_king_filter}(' o.tex{i} ')']};
+    if isempty(o.ops{i})
+        o.ops(i) = {sprintf('baxter_king_filter(%s, %s, %s, %s)', ...
+                            o.name{i}, ...
+                            num2str(high_frequency), ...
+                            num2str(low_frequency), ...
+                            num2str(K))};
+    else
+        o.ops(i) = {sprintf('baxter_king_filter(%s, %s, %s, %s)', ...
+                            o.ops{i}, ...
+                            num2str(high_frequency), ...
+                            num2str(low_frequency), ...
+                            num2str(K))};
+    end
 end
 
 
@@ -116,7 +127,7 @@ end
 %$ % Test the routine.
 %$ try
 %$     ts = dseries(y,'1950Q1');
-%$     ts = ts.baxter_king_filter_();
+%$     ts.baxter_king_filter_();
 %$     xx = dseries(x,'1950Q1');
 %$     t(1) = 1;
 %$ catch
@@ -129,6 +140,8 @@ end
 %$     t(4) = dassert(ts.init.time,[1953, 1]);
 %$     t(5) = dassert(ts.vobs,1);
 %$     t(6) = dassert(ts.nobs,176);
+%$     t(7) = dassert(ts.name{1},'Variable_1');
+%$     t(8) = dassert(ts.ops{1},'baxter_king_filter(Variable_1, 6, 32, 12)');
 %$ end
 %$
 %$ % Show results

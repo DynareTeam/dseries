@@ -37,6 +37,23 @@ o.data = [o.data; bsxfun(@times,CumulatedGrowthFactors, o.data(end,:))];
 
 o.dates = firstdate(o):firstdate(o)+nobs(o);
 
+for i=1:o.vobs
+    if isempty(o.ops{i})
+        if noinputname
+            o.ops(i) = {sprintf('chain(%s, %s)', o.name{i}, p.name{i})};
+        else
+            o.ops(i) = {sprintf('chain(%s, %s.%s)', o.name{i}, inputname(2), p.name{i})};
+        end
+    else
+        if noinputname
+            o.ops(i) = {sprintf('chain(%s, %s)', o.ops{i}, p.name{i})};
+        else
+            o.ops(i) = {sprintf('chain(%s, %s.%s)', o.ops{i}, inputname(2), p.name{i})};
+        end
+    end
+end
+
+
 %@test:1
 %$ try
 %$     ts = dseries([1; 2; 3; 4],dates('1950Q1')) ;

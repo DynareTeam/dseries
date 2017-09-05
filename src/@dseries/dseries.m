@@ -22,6 +22,7 @@ properties
     name  = {};         % Names of the variables.
     tex   = {};         % TeX names of the variables.
     dates = dates();    % Dates associated to the observations.
+    ops   = {};         % History of operations on the variables.
 end
 
 methods
@@ -52,6 +53,7 @@ methods
             o.name  = {};
             o.tex   = {};
             o.dates = dates();
+            o.ops   = {};
             return
           case 1
             if isdates(varargin{1})
@@ -64,6 +66,7 @@ methods
                     o.name  = {};
                     o.tex   = {};
                     o.dates = varargin{1};
+                    o.ops   = {};
                   otherwise
                     error('dseries:WrongInputArguments', 'Input (identified as a dates object) must have a unique element!');
                 end
@@ -74,6 +77,7 @@ methods
                 o.name = varlist;
                 o.dates = init:init+(nobs(o)-1);
                 o.tex = tex;
+                o.ops = cell(length(o.name), 1);
             elseif ~isoctave() && istable(varargin{1})
                 % It is assumed that the dates are in the first column.
                 thistable = varargin{1};
@@ -81,11 +85,13 @@ methods
                 o.tex = name2tex(o.name);
                 o.data = varargin{1}{:,2:end};
                 o.dates = dates(varargin{1}{1,1}{1})+(0:size(varargin{1}, 1)-1);
+                o.ops = cell(length(o.name), 1);
             elseif isnumeric(varargin{1}) && isequal(ndims(varargin{1}),2)
                 o.data = varargin{1};
                 o.name = default_name(vobs(o));
                 o.tex = name2tex(o.name);
                 o.dates = dates(1,1):dates(1,1)+(nobs(o)-1);
+                o.ops = cell(length(o.name), 1);
             end
           case  {2,3,4}
             if isequal(nargin,2) && ischar(varargin{1}) && isdates(varargin{2})
@@ -97,6 +103,7 @@ methods
                 o.name = varlist;
                 o.dates = varargin{2}:varargin{2}+(nobs(o)-1);
                 o.tex = tex;
+                o.ops = cell(length(o.name), 1);
                 return
             end
             if isequal(nargin,2) && ischar(varargin{1}) && ischar(varargin{2}) && isdate(varargin{2})
@@ -108,6 +115,7 @@ methods
                 o.name = varlist;
                 o.dates = dates(varargin{2}):dates(varargin{2})+(nobs(o)-1);
                 o.tex = tex;
+                o.ops = cell(length(o.name), 1);
                 return
             end
             a = varargin{1};
@@ -168,6 +176,7 @@ methods
             else
                 o.name = default_name(vobs(o));
             end
+            o.ops = cell(length(o.name), 1);
             if ~isempty(d)
                 if vobs(o)==length(d)
                     for i=1:vobs(o)
@@ -222,7 +231,7 @@ end % classdef
 %@eof:2
 
 %@test:3
-%$ t = zeros(6,1);
+%$ t = zeros(8, 1);
 %$
 %$ try
 %$     [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data.m','dynseries_test_data.m');
@@ -242,13 +251,15 @@ end % classdef
 %$     t(4) = dassert(ts.init.time,[1994, 3]);
 %$     t(5) = dassert(ts.vobs,2);
 %$     t(6) = dassert(ts.nobs,100);
+%$     t(7) = dassert(length(ts.ops), 2);
+%$     t(8) = isempty(ts.ops{1}) && isempty(ts.ops{2});
 %$ end
 %$
 %$ T = all(t);
 %@eof:3
 
 %@test:4
-%$ t = zeros(6,1);
+%$ t = zeros(8, 1);
 %$
 %$ try
 %$     [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data.mat','dynseries_test_data.mat');
@@ -268,13 +279,15 @@ end % classdef
 %$     t(4) = dassert(ts.init.time,[1994, 3]);
 %$     t(5) = dassert(ts.vobs,2);
 %$     t(6) = dassert(ts.nobs,100);
+%$     t(7) = dassert(length(ts.ops), 2);
+%$     t(8) = isempty(ts.ops{1}) && isempty(ts.ops{2});
 %$ end
 %$
 %$ T = all(t);
 %@eof:4
 
 %@test:5
-%$ t = zeros(8,1);
+%$ t = zeros(10, 1);
 %$
 %$ try
 %$     [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data.csv','dynseries_test_data.csv');
@@ -296,13 +309,15 @@ end % classdef
 %$     t(6) = dassert(ts.nobs,4);
 %$     t(7) = dassert(ts.name,{'azert';'yuiop';'qsdfg';'jklm'});
 %$     t(8) = dassert(ts.tex,{'azert';'yuiop';'qsdfg';'jklm'});
+%$     t(9) = dassert(length(ts.ops), 4);
+%$     t(10) = isempty(ts.ops{1}) && isempty(ts.ops{2}) && isempty(ts.ops{3}) && isempty(ts.ops{4}) ;
 %$ end
 %$
 %$ T = all(t);
 %@eof:5
 
 %@test:6
-%$ t = zeros(8,1);
+%$ t = zeros(10, 1);
 %$
 %$ try
 %$     ts = dseries(transpose(1:5),[]);
@@ -319,13 +334,15 @@ end % classdef
 %$     t(6) = dassert(ts.nobs,5);
 %$     t(7) = dassert(ts.name,{'Variable_1'});
 %$     t(8) = dassert(ts.tex,{'Variable\\_1'});
+%$     t(9) = dassert(length(ts.ops), 1);
+%$     t(10) = isempty(ts.ops{1});
 %$ end
 %$
 %$ T = all(t);
 %@eof:6
 
 %@test:7
-%$ t = zeros(8,1);
+%$ t = zeros(10, 1);
 %$
 %$ try
 %$     ts = dseries(transpose(1:5),'1950Q1');
@@ -342,13 +359,15 @@ end % classdef
 %$     t(6) = dassert(ts.nobs,5);
 %$     t(7) = dassert(ts.name,{'Variable_1'});
 %$     t(8) = dassert(ts.tex,{'Variable\\_1'});
+%$     t(9) = dassert(length(ts.ops), 1);
+%$     t(10) = isempty(ts.ops{1});
 %$ end
 %$
 %$ T = all(t);
 %@eof:7
 
 %@test:8
-%$ t = zeros(8,1);
+%$ t = zeros(10, 1);
 %$
 %$ try
 %$     ts = dseries([transpose(1:5), transpose(6:10)],'1950q1',{'Output'; 'Consumption'}, {'Y_t'; 'C_t'});
@@ -365,6 +384,8 @@ end % classdef
 %$     t(6) = dassert(ts.nobs,5);
 %$     t(7) = dassert(ts.name,{'Output'; 'Consumption'});
 %$     t(8) = dassert(ts.tex,{'Y_t'; 'C_t'});
+%$     t(9) = dassert(length(ts.ops), 2);
+%$     t(10) = isempty(ts.ops{1}) && isempty(ts.ops{2});
 %$ end
 %$
 %$ T = all(t);
@@ -400,6 +421,8 @@ end % classdef
 %$     t(6) = dassert(ts.nobs,5);
 %$     t(7) = dassert(ts.name,{'GDP';'Consumption';'CPI'});
 %$     t(8) = dassert(ts.tex,{'GDP';'Consumption';'CPI'});
+%$     t(9) = dassert(length(ts.ops), 3);
+%$     t(10) = isempty(ts.ops{1}) && isempty(ts.ops{2}) && isempty(ts.ops{3});
 %$ end
 %$
 %$ T = all(t);
@@ -435,6 +458,8 @@ end % classdef
 %$     t(6) = dassert(ts.nobs,5);
 %$     t(7) = dassert(ts.name,{'Variable_1';'Variable_2';'Variable_3'});
 %$     t(8) = dassert(ts.tex,{'Variable\\_1';'Variable\\_2';'Variable\\_3'});
+%$     t(9) = dassert(length(ts.ops), 3);
+%$     t(10) = isempty(ts.ops{1}) && isempty(ts.ops{2}) && isempty(ts.ops{3});
 %$ end
 %$
 %$ T = all(t);
@@ -470,6 +495,8 @@ end % classdef
 %$     t(6) = dassert(ts.nobs,5);
 %$     t(7) = dassert(ts.name,{'Variable_1';'Variable_2';'Variable_3'});
 %$     t(8) = dassert(ts.tex,{'Variable\\_1';'Variable\\_2';'Variable\\_3'});
+%$     t(9) = dassert(length(ts.ops), 3);
+%$     t(10) = isempty(ts.ops{1}) && isempty(ts.ops{2}) && isempty(ts.ops{3});
 %$ end
 %$
 %$ T = all(t);
@@ -505,13 +532,15 @@ end % classdef
 %$     t(6) = dassert(ts.nobs,5);
 %$     t(7) = dassert(ts.name,{'GDP';'Consumption';'CPI'});
 %$     t(8) = dassert(ts.tex,{'GDP';'Consumption';'CPI'});
+%$     t(9) = dassert(length(ts.ops), 3);
+%$     t(10) = isempty(ts.ops{1}) && isempty(ts.ops{2}) && isempty(ts.ops{3});
 %$ end
 %$
 %$ T = all(t);
 %@eof:12
 
 %@test:13
-%$ t = zeros(6,1);
+%$ t = zeros(8, 1);
 %$
 %$ try
 %$     ts = dseries(transpose(1:4),dates('1990Q1'):dates('1990Q4'));
@@ -526,13 +555,15 @@ end % classdef
 %$     t(4) = dassert(ts.init.time,[1990, 1]);
 %$     t(5) = dassert(ts.vobs,1);
 %$     t(6) = dassert(ts.nobs,4);
+%$     t(7) = dassert(length(ts.ops), 1);
+%$     t(8) = isempty(ts.ops{1});
 %$ end
 %$
 %$ T = all(t);
 %@eof:13
 
 %@test:14
-%$ t = zeros(7,1);
+%$ t = zeros(9, 1);
 %$
 %$ try
 %$     ts = dseries([1, 2],dates('1990Q1'):dates('1990Q4'));
@@ -548,6 +579,8 @@ end % classdef
 %$     t(5) = dassert(ts.vobs,2);
 %$     t(6) = dassert(ts.nobs,4);
 %$     t(7) = dassert(ts.data, [ones(4,1), 2*ones(4,1)]);
+%$     t(8) = dassert(length(ts.ops), 2);
+%$     t(9) = isempty(ts.ops{1}) && isempty(ts.ops{2});
 %$ end
 %$
 %$ T = all(t);

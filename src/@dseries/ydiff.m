@@ -43,9 +43,8 @@ o.ydiff_();
 %$     DATA = NaN(4,ts.vobs);
 %$     DATA = [DATA; 4*ones(ts.nobs-4,ts.vobs)];
 %$     t(2) = dassert(ds.data,DATA);
-%$     t(3) = dassert(ds.name{1},['ydiff(A1)']);
-%$     t(4) = dassert(ds.tex{1},['\\Delta_4 A_1']);
-%$     t(5) = dassert(ts.data, data);
+%$     t(3) = dassert(ds.ops{1},['ydiff(A1)']);
+%$     t(4) = dassert(ts.data, data);
 %$ end
 %$
 %$ T = all(t);

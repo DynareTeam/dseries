@@ -35,12 +35,22 @@ else
 end
 
 for i=1:vobs(o)
-    o.name(i) = {['onesidedhptrend(' o.name{i} ')']};
-    o.tex(i) = {['\text{onesidedhptrend}(' o.tex{i} ')']};
+    if isempty(o.ops{i})
+        if isempty(lambda)
+            o.ops(i) = {sprintf('onesidedhptrend(%s, [])', o.name{i})};
+        else
+            o.ops(i) = {sprintf('onesidedhptrend(%s, %s)', o.name{i}, num2str(lambda))};
+        end
+    else
+        if isempty(lambda)
+            o.ops(i) = {sprintf('onesidedhptrend(%s, [])', o.ops{i})};
+        else
+            o.ops(i) = {sprintf('onesidedhptrend(%s, %s)', o.ops{i}, num2str(lambda))};
+        end
+    end
 end
 
 o.data = one_sided_hp_filter(o.data, lambda);
-
 
 return
 

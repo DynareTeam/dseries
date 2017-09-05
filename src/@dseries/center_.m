@@ -38,6 +38,14 @@ else
     o.data = bsxfun(@minus, o.data, m);
 end
 
+for i=1:o.vobs
+    if isempty(o.ops{i})
+        o.ops(i) = {sprintf('center(%s, %s)', o.name{i}, num2str(geometric))};
+    else
+        o.ops(i) = {sprintf('center(%s, %s)', o.ops{i}, num2str(geometric))};
+    end
+end
+
 %@test:1
 %$ % Define a dataset.
 %$ A = repmat([1.005, 1.05], 10, 1);
@@ -53,6 +61,8 @@ end
 %$
 %$ if t(1)
 %$    t(2) = all(all(abs(ts.data-ones(10,2))<1e-12));
+%$    t(3) = dassert(ts.ops{1}, 'center(Variable_1, 1)');
+%$    t(4) = dassert(ts.name{1}, 'Variable_1');
 %$ end
 %$ T = all(t);
 %@eof:1

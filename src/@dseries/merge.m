@@ -34,13 +34,19 @@ if ~isdseries(p)
 end
 
 if ~isequal(frequency(o), frequency(p))
-    error(['dseries::merge: Cannot merge ' inputname(1) ' and ' inputname(2) ' (frequencies are different)!'])
+    if isempty(inputname(1))
+        error(['dseries::merge: Cannot merge dseries objects (frequencies are different)!'])
+    else
+        error(['dseries::merge: Cannot merge ' inputname(1) ' and ' inputname(2) ' (frequencies are different)!'])
+    end
 end
 
 q = dseries();
 [q.name, IBC, junk] = unique([o.name; p.name], 'last');
 tex = [o.tex; p.tex];
 q.tex = tex(IBC);
+ops = [o.ops; p.ops];
+q.ops = ops(IBC);
 
 if nobs(o) == 0
     q = copy(p);

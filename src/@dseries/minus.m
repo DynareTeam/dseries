@@ -50,7 +50,31 @@ if isnumeric(o) && (isscalar(o) ||  isvector(o))
     end
     q = copy(p);
     q.data = bsxfun(@minus, o, p.data);
-    return;
+    if isscalar(o)
+        for i=1:vobs(q)
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('minus(%s, %s)', matrix2string(o), p.name{i})};
+            else
+                q.ops(i) = {sprintf('minus(%s, %s)', matrix2string(o), p.ops{i})};
+            end
+        end
+        return
+    end
+    if isvector(o)
+        for i=1:vobs(q)
+            if isrow(o)
+                oo = o(i);
+            else
+                oo = o;
+            end
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('minus(%s, %s)', matrix2string(oo), p.name{i})};
+            else
+                q.ops(i) = {sprintf('minus(%s, %s)', matrix2string(oo), p.ops{i})};
+            end
+        end
+        return
+    end
 end
 
 if isnumeric(p) && (isscalar(p) || isvector(p))
@@ -58,12 +82,53 @@ if isnumeric(p) && (isscalar(p) || isvector(p))
         error('dseries::minus: First input argument must be a dseries object!')
     end
     q = copy(o);
-    q.data = bsxfun(@minus,o.data,p);
+    q.data = bsxfun(@minus, o.data, p);
+    if isscalar(p)
+        for i=1:vobs(q)
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('minus(%s, %s)', o.name{i}, matrix2string(p))};
+            else
+                q.ops(i) = {sprintf('minus(%s, %s)', o.ops{i}, matrix2string(p))};
+            end
+        end
+        return
+    end
+    if isvector(p)
+        for i=1:vobs(q)
+            if isrow(p)
+                pp = p(i);
+            else
+                pp = p;
+            end
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('minus(%s, %s)', o.name{i}, matrix2string(pp))};
+            else
+                q.ops(i) = {sprintf('minus(%s, %s)', o.ops{i}, matrix2string(pp))};
+            end
+        end
+        return
+    end
+end
+
+if isdseries(o) && isempty(o)
+    q = -copy(p);
+    for i=1:vobs(q)
+        q.ops(i) = {sprintf('minus(dseries(), %s)', q.ops{i}(8:end-1))};
+    end
+    return
+end
+
+if isdseries(p) && isempty(p)
+    q = copy(o);
     return
 end
 
 if ~isequal(vobs(o), vobs(p)) && ~(isequal(vobs(o),1) || isequal(vobs(p),1))
-    error('dseries:WrongInputArguments', 'Cannot substract %s and %s (wrong number of variables)!', inputname(1), inputname(2))
+    if isempty(inputname(1))
+        error('dseries:WrongInputArguments', 'Cannot substract the two dseries objects (wrong number of variables)!')
+    else
+        error('dseries:WrongInputArguments', 'Cannot substract %s and %s (wrong number of variables)!', inputname(1), inputname(2))
+    end
 else
     if vobs(o)>vobs(p)
         ido = 1:vobs(o);
@@ -78,21 +143,15 @@ else
 end
 
 if ~isequal(frequency(o),frequency(p))
-    error('dseries:WrongInputArguments', 'Cannot substract %s and %s (frequencies are different)!', inputname(1), inputname(2))
+    if isempty(inputname(1))
+        error('dseries:WrongInputArguments', 'Cannot substract the two dseries objects (frequencies are different)!')
+    else
+        error('dseries:WrongInputArguments', 'Cannot substract %s and %s (frequencies are different)!', inputname(1), inputname(2))
+    end
 end
 
 if ~isequal(nobs(o), nobs(p)) || ~isequal(firstdate(o),firstdate(p))
     [o, p] = align(o, p);
-end
-
-if isempty(o)
-    q = -copy(p);
-    return
-end
-
-if isempty(p)
-    q = copy(o);
-    return
 end
 
 q = dseries();
@@ -101,10 +160,13 @@ q.dates = o.dates;
 q_vobs = max(vobs(o), vobs(p));
 q.name = cell(q_vobs,1);
 q.tex = cell(q_vobs,1);
+q.ops = cell(q_vobs,1);
 for i=1:q_vobs
-    q.name(i) = {['minus(' o.name{ido(i)} ';' p.name{idp(i)} ')']};
-    q.tex(i) = {['(' o.tex{ido(i)} '-' p.tex{idp(i)} ')']};
+    q.name(i) = {o.name{ido(i)}};
+    q.tex(i) = {o.tex{ido(i)}};
+    q.ops(i) = {sprintf('minus(%s, %s)', o.name{ido(i)}, p.name{idp(i)})};
 end
+
 q.data = bsxfun(@minus, o.data, p.data);
 
 %@test:1
@@ -130,13 +192,14 @@ q.data = bsxfun(@minus, o.data, p.data);
 %$    t(2) = dassert(ts3.vobs,2);
 %$    t(3) = dassert(ts3.nobs,10);
 %$    t(4) = dassert(ts3.data,[A(:,1)-B, A(:,2)-B],1e-15);
-%$    t(5) = dassert(ts3.name,{'minus(A1;B1)';'minus(A2;B1)'});
+%$    t(5) = dassert(ts3.name,{'A1'; 'A2'});
 %$    t(6) = dassert(ts1.data, A, 1e-15);
+%$    t(7) = dassert(ts3.ops,{'minus(A1, B1)';'minus(A2, B1)'});
 %$ end
 %$ T = all(t);
 %@eof:1
 
-%@test:3
+%@test:2
 %$ % Define a datasets.
 %$ A = rand(10,2); B = randn(5,1);
 %$
@@ -159,24 +222,34 @@ q.data = bsxfun(@minus, o.data, p.data);
 %$    t(2) = dassert(ts3.vobs,2);
 %$    t(3) = dassert(ts3.nobs,10);
 %$    t(4) = dassert(ts3.data,[A(1:5,1)-B(1:5), A(1:5,2)-B(1:5) ; NaN(5,2)],1e-15);
-%$    t(5) = dassert(ts3.name,{'minus(A1;B1)';'minus(A2;B1)'});
+%$    t(5) = dassert(ts3.name,{'A1';'A2'});
+%$    t(6) = dassert(ts3.ops,{'minus(A1, B1)';'minus(A2, B1)'});
 %$ end
 %$ T = all(t);
-%@eof:3
+%@eof:2
 
-%@test:4
+%@test:3
 %$ ts1 = dseries(ones(3,1));
 %$ ts2 = ts1-1;
 %$ ts3 = 2-ts1;
 %$ t(1) = isequal(ts2.data, zeros(3,1));
 %$ t(2) = isequal(ts3.data, ts1.data);
 %$ T = all(t);
+%@eof:3
+
+%@test:4
+%$ ts1 = dseries(ones(3,2));
+%$ ts2 = ts1-1;
+%$ ts3 = 2-ts1;
+%$ t(1) = isequal(ts2.data, zeros(3,2));
+%$ t(2) = isequal(ts3.data, ts1.data);
+%$ T = all(t);
 %@eof:4
 
 %@test:5
 %$ ts1 = dseries(ones(3,2));
-%$ ts2 = ts1-1;
-%$ ts3 = 2-ts1;
+%$ ts2 = ts1-ones(3,1);
+%$ ts3 = 2*ones(3,1)-ts1;
 %$ t(1) = isequal(ts2.data, zeros(3,2));
 %$ t(2) = isequal(ts3.data, ts1.data);
 %$ T = all(t);
@@ -184,18 +257,9 @@ q.data = bsxfun(@minus, o.data, p.data);
 
 %@test:6
 %$ ts1 = dseries(ones(3,2));
-%$ ts2 = ts1-ones(3,1);
-%$ ts3 = 2*ones(3,1)-ts1;
-%$ t(1) = isequal(ts2.data, zeros(3,2));
-%$ t(2) = isequal(ts3.data, ts1.data);
-%$ T = all(t);
-%@eof:6
-
-%@test:7
-%$ ts1 = dseries(ones(3,2));
 %$ ts2 = ts1-ones(1,2);
 %$ ts3 = 2*ones(1,2)-ts1;
 %$ t(1) = isequal(ts2.data, zeros(3,2));
 %$ t(2) = isequal(ts3.data, ts1.data);
 %$ T = all(t);
-%@eof:7
+%@eof:6

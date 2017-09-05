@@ -58,8 +58,11 @@ end
 o.data = [NaN(p, vobs(o));  o.data(1:end-p,:)];
 
 for i=1:vobs(o)
-    o.name(i) = {[ 'lag(' o.name{i} ',' int2str(p) ')']};
-    o.tex(i) = {[ o.tex{i} '_{-' int2str(p) '}']};
+    if isempty(o.ops)
+        o.ops(i) = {sprintf('lag(%s, %s)', o.name{i}, p)};
+    else
+        o.ops(i) = {sprintf('lag(%s, %s)', o.ops{i}, p)};
+    end
 end
 
 %@test:1

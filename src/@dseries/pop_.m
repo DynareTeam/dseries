@@ -41,6 +41,7 @@ end
 o.data(:,id) = [];
 o.name(id) = [];
 o.tex(id) = [];
+o.ops(id) = [];
 
 %@test:1
 %$ % Define a datasets.

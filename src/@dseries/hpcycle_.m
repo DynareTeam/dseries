@@ -34,13 +34,24 @@ else
     lambda = [];
 end
 
-for i=1:vobs(o)
-    o.name(i) = {['hpcycle(' o.name{i} ')']};
-    o.tex(i) = {['\text{hpcycle}(' o.tex{i} ')']};
-end
-
 [junk, data] = sample_hp_filter(o.data,lambda);
 o.data = data;
+
+for i=1:vobs(o)
+    if isempty(o.ops{i})
+        if isempty(lambda)
+            o.ops(i) = {sprintf('hpcycle(%s, [])', o.name{i})};
+        else
+            o.ops(i) = {sprintf('hpcycle(%s, %s)', o.name{i}, num2str(lambda))};
+        end
+    else
+        if isempty(lambda)
+            o.ops(i) = {sprintf('hpcycle(%s, [])', o.ops{i})};
+        else
+            o.ops(i) = {sprintf('hpcycle(%s, %s)', o.ops{i}, num2str(lambda))};
+        end
+    end
+end
 
 %@test:1
 %$ plot_flag = false;

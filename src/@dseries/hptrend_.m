@@ -34,12 +34,24 @@ else
     lambda = [];
 end
 
+o.data = sample_hp_filter(o.data, lambda);
+
 for i=1:vobs(o)
-    o.name(i) = {['hptrend(' o.name{i} ')']};
-    o.tex(i) = {['\text{hptrend}(' o.tex{i} ')']};
+    if isempty(o.ops{i})
+        if isempty(lambda)
+            o.ops(i) = {sprintf('hptrend(%s, [])', o.name{i})};
+        else
+            o.ops(i) = {sprintf('hptrend(%s, %s)', o.name{i}, num2str(lambda))};
+        end
+    else
+        if isempty(lambda)
+            o.ops(i) = {sprintf('hptrend(%s, [])', o.name{i})};
+        else
+            o.ops(i) = {sprintf('hptrend(%s, %s)', o.name{i}, num2str(lambda))};
+        end
+    end
 end
 
-o.data = sample_hp_filter(o.data, lambda);
 
 %@test:1
 %$ plot_flag = 0;

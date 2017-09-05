@@ -89,12 +89,16 @@ o.baxter_king_filter_(high_frequency, low_frequency, K);
 %$     t(4) = dassert(ds.init.time, [1953, 1]);
 %$     t(5) = dassert(ds.vobs, 1);
 %$     t(6) = dassert(ds.nobs, 176);
-%$     t(7) = dassert(ts.freq, 4);
-%$     t(8) = dassert(ts.init.freq, 4);
-%$     t(9) = dassert(ts.init.time, [1950, 1]);
-%$     t(10) = dassert(ts.vobs, 1);
-%$     t(11) = dassert(ts.nobs, length(y));
-%$     t(12) = dassert(ts.data, y);
+%$     t(7) = dassert(ds.name{1}, 'Variable_1');
+%$     t(8) = dassert(ds.ops{1}, 'baxter_king_filter(Variable_1, 6, 32, 12)');
+%$     t(9) = dassert(ts.freq, 4);
+%$     t(10) = dassert(ts.name{1}, 'Variable_1');
+%$     t(11) = dassert(ts.init.freq, 4);
+%$     t(12) = dassert(ts.init.time, [1950, 1]);
+%$     t(13) = dassert(ts.vobs, 1);
+%$     t(14) = dassert(ts.nobs, length(y));
+%$     t(15) = dassert(ts.data, y);
+%$     t(16) = isempty(ts.ops{1});
 %$ end
 %$
 %$ % Show results

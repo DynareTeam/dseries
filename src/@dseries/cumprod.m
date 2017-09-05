@@ -59,9 +59,11 @@ end
 %$
 %$ if t(1)
 %$     t(2) = isequal(ds.data, cumprod(A));
-%$     t(3) = isequal(ds.name{1}, 'cumprod(A1)');
-%$     t(4) = isequal(ts.data, A);
-%$     t(5) = isequal(ts.name{1}, 'A1');
+%$     t(3) = isequal(ds.name{1}, 'A1');
+%$     t(4) = isequal(ds.ops{1}, 'cumprod(A1)');
+%$     t(5) = isequal(ts.data, A);
+%$     t(6) = isequal(ts.name{1}, 'A1');
+%$     t(7) = isempty(ts.ops{1});
 %$ end
 %$
 %$ T = all(t);

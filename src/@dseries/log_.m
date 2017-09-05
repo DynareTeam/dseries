@@ -29,12 +29,15 @@ if any(o.data<eps)
     error('dseries:WrongInputArguments', 'Variables in %s have be strictly positive!', inputname(1))
 end
 
-for i=1:vobs(o)
-    o.name(i) = {['log(' o.name{i} ')']};
-    o.tex(i) = {['\log(' o.tex{i} ')']};
-end
-
 o.data = log(o.data);
+
+for i=1:vobs(o)
+    if isempty(o.ops{i})
+        o.ops(i) = {sprintf('log(%s)', o.name{i})};
+    else
+        o.ops(i) = {sprintf('log(%s)', o.ops{i})};
+    end
+end
 
 %@test:1
 %$ % Define a dates object
@@ -77,12 +80,18 @@ o.data = log(o.data);
 %$
 %$ if t(1)
 %$      t(2) = dassert(length(o.name), 2);
-%$      t(3) = dassert(o.name{1},'log(Variable_1)');
-%$      t(4) = dassert(o.name{2},'log(Variable_2)');
-%$      t(5) = dassert(q.name{1},'log(Variable_1)');
-%$      t(6) = dassert(q.name{2},'log(Variable_2)');
+%$      t(3) = dassert(o.name{1},'Variable_1');
+%$      t(4) = dassert(o.name{2},'Variable_2');
+%$      t(5) = dassert(q.name{1},'Variable_1');
+%$      t(6) = dassert(q.name{2},'Variable_2');
 %$      t(7) = dassert(r.name{1},'Variable_1');
 %$      t(8) = dassert(r.name{2},'Variable_2');
+%$      t(9) = dassert(o.ops{1},'log(Variable_1)');
+%$      t(10) = dassert(o.ops{2},'log(Variable_2)');
+%$      t(11) = dassert(q.ops{1},'log(Variable_1)');
+%$      t(12) = dassert(q.ops{2},'log(Variable_2)');
+%$      t(13) = isempty(r.ops{1});
+%$      t(14) = isempty(r.ops{2});
 %$ end
 %$
 %$ T = all(t);

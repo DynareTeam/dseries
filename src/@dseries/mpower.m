@@ -26,47 +26,59 @@ function q = mpower(o, p) % --*-- Unitary tests --*--
 % You should have received a copy of the GNU General Public License
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
-if isnumeric(o) && isvector(o) && length(o)>1
-    if ~isdseries(p)
-        error('dseries:WrongInputArguments', 'Second input argument must be a dseries object!')
+if isnumeric(o) && isvector(o) && isdseries(p) && length(o)==nobs(p)
+    q = dseries(zeros(size(p.data)), p.firstdate);
+    q.data = bsxfun(@power, o, p.data);
+    for i=1:vobs(q)
+        q.ops(i) = {sprintf('power(%s, %s)', matrix2string(o), p.name{i})};
     end
-    q = copy(p);
-    q.data = bsxfun(@power, p.data, o);
-    return;
+    return
 end
 
-if isnumeric(p) && isvector(p) && length(p)>1
-    if ~isdseries(o)
-        error('dseries:WrongInputArguments', 'First input argument must be a dseries object!')
-    end
+if isnumeric(p) && isvector(p) && isdseries(o) && length(p)==nobs(o)
     q = copy(o);
     q.data = bsxfun(@power, o.data, p);
+    for i=1:vobs(q)
+        if isempty(q.ops{i})
+            q.ops(i) = {sprintf('power(%s, %s)', q.name{i}, matrix2string(p))};
+        else
+            q.ops(i) = {sprintf('power(%s, %s)', q.name{i}, matrix2string(p))};
+        end
+    end
     return
 end
 
 if isdseries(o) && isnumeric(p) && isreal(p) &&  isscalar(p)
-    q = dseries();
-    q.dates = o.dates;
+    q = copy(o);
     q.data = o.data.^p;
-    q.name = cell(vobs(q),1);
-    q.tex = cell(vobs(q),1);
     for i=1:vobs(q)
-        q.name(i) = {['power(' o.name{i} ';' num2str(p) ')']};
-        q.tex(i) = {[o.tex{i} '^' num2str(p) ]};
+        if isempty(o.ops{i})
+            q.ops(i) = {sprintf('power(%s, %s)', q.name{i}, num2str(p))};
+        else
+            q.ops(i) = {sprintf('power(%s, %s)', o.ops{i}, num2str(p))};
+        end
     end
     return
 end
 
 if isdseries(o) && isdseries(p)
     if isequal(nobs(o),nobs(p)) && isequal(vobs(o), vobs(p)) && isequal(frequency(o),frequency(p))
-        q = dseries();
+        q = copy(o);
         q.data = (o.data).^p.data;
-        q.dates = o.dates;
-        q.name = cell(vobs(q),1);
-        q.tex = cell(vobs(q),1);
         for i=1:vobs(q)
-            q.name(i) = {['power(' o.name{i} ';' p.name{i} ')']};
-            q.tex(i) = {[o.tex{i} '^{' p.tex{i} '}']};
+            if isempty(o.ops{i})
+                if isempty(p.ops{i})
+                    q.ops(i) = {sprintf('power(%s, %s)', q.name{i}, p.name{i})};
+                else
+                    q.ops(i) = {sprintf('power(%s, %s)', q.name{i}, p.ops{i})};
+                end
+            else
+                if isempty(p.ops{i})
+                    q.ops(i) = {sprintf('power(%s, %s)', o.ops{i}, p.name{i})};
+                else
+                    q.ops(i) = {sprintf('power(%s, %s)', o.ops{i}, p.ops{i})};
+                end
+            end
         end
     else
         error('dseries:WrongInputArguments', 'If both input arguments are dseries objects, they must have the same numbers of variables and observations and common frequency!')
@@ -98,9 +110,10 @@ error('dseries:WrongInputArguments', 'Wrong calling sequence! Please check the m
 %$    t(2) = dassert(ts3.vobs,2);
 %$    t(3) = dassert(ts3.nobs,10);
 %$    t(4) = dassert(ts3.data,A.^B,1e-15);
-%$    t(5) = dassert(ts3.name,{'power(A1;B1)';'power(A2;B2)'});
-%$    t(6) = dassert(ts3.tex,{'A1^{B1}';'A2^{B2}'});
+%$    t(5) = dassert(ts3.name,{'A1';'A2'});
+%$    t(6) = dassert(ts3.tex,{'A1';'A2'});
 %$    t(7) = dassert(ts1.data, A, 1e-15);
+%$    t(8) = dassert(ts3.ops,{'power(A1, B1)';'power(A2, B2)'});
 %$ end
 %$ T = all(t);
 %@eof:1
@@ -126,8 +139,9 @@ error('dseries:WrongInputArguments', 'Wrong calling sequence! Please check the m
 %$    t(2) = dassert(ts3.vobs,2);
 %$    t(3) = dassert(ts3.nobs,10);
 %$    t(4) = dassert(ts3.data,A.^2,1e-15);
-%$    t(5) = dassert(ts3.name,{'power(A1;2)';'power(A2;2)'});
-%$    t(6) = dassert(ts3.tex,{'A1^2';'A2^2'});
+%$    t(5) = dassert(ts3.name,{'A1';'A2'});
+%$    t(6) = dassert(ts3.tex,{'A1';'A2'});
+%$    t(7) = dassert(ts3.ops,{'power(A1, 2)';'power(A2, 2)'});
 %$ end
 %$ T = all(t);
 %@eof:2

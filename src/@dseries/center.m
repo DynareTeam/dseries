@@ -49,6 +49,10 @@ o.center_(geometric);
 %$ if t(1)
 %$    t(2) = all(all(abs(ds.data-ones(10,2))<1e-12));
 %$    t(3) = all(all(abs(ts.data-A)<1e-12));
+%$    t(4) = dassert(ds.ops{1}, 'center(Variable_1, 1)');
+%$    t(5) = dassert(ds.name{1}, 'Variable_1');
+%$    t(6) = isempty(ts.ops{1});
+%$    t(7) = dassert(ds.name{1}, 'Variable_1');
 %$ end
 %$ T = all(t);
 %@eof:1

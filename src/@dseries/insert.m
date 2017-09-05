@@ -30,11 +30,19 @@ function o = insert(o, p, id) % --*-- Unitary tests --*--
 [n, message] = common_strings_in_cell_arrays(o.name, p.name);
 
 if n
-    error(['dseries::insert: Variable(s) ' message ' already exist in ''' inputname(1) '''!'])
+    if isempty(inputname(1))
+        error(['dseries::insert: Variable(s) ' message ' already exist in dseries object!'])
+    else
+        error(['dseries::insert: Variable(s) ' message ' already exist in ''' inputname(1) '''!'])
+    end
 end
 
 if ~isequal(frequency(o),frequency(p))
-    error(['dseries::insert: ''' inputname(1) ''' and ''' inputname(2) ''' dseries objects must have common frequencies!'])
+    if isempty(inputname(1))
+        error(['dseries::insert: dseries objects must have common frequencies!'])
+    else
+        error(['dseries::insert: ''' inputname(1) ''' and ''' inputname(2) ''' dseries objects must have common frequencies!'])
+    end
 end
 
 % Keep the second input argument constant.
@@ -49,12 +57,14 @@ if n>1
     p.data = p.data(:,jd);
     p.name = p.name(jd);
     p.tex = p.tex(jd);
+    p.ops = p.ops(jd);
 end
 
 for i=1:n
     o.data = insert_column_vector_in_a_matrix(o.data, p.data(:,i),id(i));
     o.name = insert_object_in_a_one_dimensional_cell_array(o.name, p.name{i}, id(i));
     o.tex = insert_object_in_a_one_dimensional_cell_array(o.tex, p.tex{i}, id(i));
+    o.ops = insert_object_in_a_one_dimensional_cell_array(o.ops, p.ops{i}, id(i));
     id = id+1;
 end
 

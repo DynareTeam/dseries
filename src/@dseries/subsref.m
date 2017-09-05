@@ -65,7 +65,7 @@ function B = subsref(A, S) % --*-- Unitary tests --*--
 switch S(1).type
   case '.'
     switch S(1).subs
-      case {'data','name','tex','dates'}        % Public members.
+      case {'data','name','tex','dates','ops'}        % Public members.
         if length(S)>1 && isequal(S(2).type,'()') && isempty(S(2).subs)
             error(['dseries::subsref: ' S(1).subs ' is not a method but a member!'])
         end
@@ -183,6 +183,7 @@ switch S(1).type
             B.name = A.name(ndx);
             B.tex = A.tex(ndx);
             B.dates = A.dates;
+            B.ops = A.ops(ndx);
         else
             error('dseries::subsref: Unknown public method, public member or variable!')
         end

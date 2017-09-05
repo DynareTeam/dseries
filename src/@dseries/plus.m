@@ -30,8 +30,29 @@ if isnumeric(o) && (isscalar(o) ||  isvector(o))
     if ~isdseries(p)
         error('dseries::plus: Second input argument must be a dseries object!')
     end
-    q = copy(p);
-    q.data = bsxfun(@plus, q.data, o);
+    q = dseries(zeros(size(p.data)), p.firstdate);
+    q.data = bsxfun(@plus, o, p.data);
+    for i=1:vobs(q)
+        if isscalar(o)
+            if isempty(p.ops{i})
+                q.ops(i) = {sprintf('plus(%s, %s)', num2str(o), p.name{i})};
+            else
+                q.ops(i) = {sprintf('plus(%s, %s)', num2str(o), p.ops{i})};
+            end
+        elseif isrow(o)
+            if isempty(p.ops{i})
+                q.ops(i) = {sprintf('plus(%s, %s)', num2str(o(i)), p.name{i})};
+            else
+                q.ops(i) = {sprintf('plus(%s, %s)', num2str(o(i)), p.ops{i})};
+            end
+        else
+            if isempty(p.ops{i})
+                q.ops(i) = {sprintf('plus(%s, %s)', matrix2string(o), p.name{i})};
+            else
+                q.ops(i) = {sprintf('plus(%s, %s)', matrix2string(o), p.ops{i})};
+            end
+        end
+    end
     return
 end
 
@@ -41,53 +62,84 @@ if isnumeric(p) && (isscalar(p) || isvector(p))
     end
     q = copy(o);
     q.data = bsxfun(@plus,o.data,p);
-    return
-end
-
-if ~isequal(vobs(o), vobs(p)) && ~(isequal(vobs(o), 1) || isequal(vobs(p), 1))
-    error(['dseries::plus: Cannot add ' inputname(1) ' and ' inputname(2) ' (wrong number of variables)!'])
-else
-    if vobs(o)>vobs(p)
-        ido = 1:vobs(o);
-        idp = ones(1,vobs(o));
-    elseif vobs(o)<vobs(p)
-        ido = ones(1,vobs(p));
-        idp = 1:vobs(p);
-    else
-        ido = 1:vobs(o);
-        idp = ido;
+    for i=1:vobs(q)
+        if isscalar(p)
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('plus(%s, %s)', q.name{i}, num2str(p))};
+            else
+                q.ops(i) = {sprintf('plus(%s, %s)', q.ops{i}, num2str(p))};
+            end
+        elseif isrow(p)
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('plus(%s, %s)', q.name{i}, num2str(p(i)))};
+            else
+                q.ops(i) = {sprintf('plus(%s, %s)', q.ops{i}, num2str(p(i)))};
+            end
+        else
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('plus(%s, %s)', q.name{i}, matrix2string(p))};
+            else
+                q.ops(i) = {sprintf('plus(%s, %s)', q.ops{i}, matrix2string(p))};
+            end
+        end
     end
-end
-
-if ~isequal(frequency(o),frequency(p))
-    error(['dseries::plus: Cannot add ' inputname(1) ' and ' inputname(2) ' (frequencies are different)!'])
-end
-
-if ~isequal(nobs(o), nobs(p)) || ~isequal(firstdate(o),firstdate(p))
-    [o, p] = align(o, p);
-end
-
-if isempty(o)
-    q = p;
     return
 end
 
-if isempty(p)
-    q = o;
-    return
-end
-
-q = dseries();
-
-q.data = bsxfun(@plus,o.data,p.data);
-q.dates = o.dates;
-
-q_vobs = max(vobs(o), vobs(p));
-q.name = cell(q_vobs,1);
-q.tex = cell(q_vobs,1);
-for i=1:q_vobs
-    q.name(i) = {['plus(' o.name{ido(i)} ';' p.name{idp(i)} ')']};
-    q.tex(i) = {['(' o.tex{ido(i)} '+' p.tex{idp(i)} ')']};
+if isdseries(o) && isdseries(p)
+    if isempty(o)
+        q = copy(p);
+        return
+    end
+    if isempty(p)
+        q = copy(o);
+        return
+    end
+    if ~isequal(vobs(o), vobs(p)) && ~(isequal(vobs(o), 1) || isequal(vobs(p), 1))
+        error(['dseries::plus: Cannot add ' inputname(1) ' and ' inputname(2) ' (wrong number of variables)!'])
+    else
+        if vobs(o)>vobs(p)
+            ido = 1:vobs(o);
+            idp = ones(1,vobs(o));
+        elseif vobs(o)<vobs(p)
+            ido = ones(1,vobs(p));
+            idp = 1:vobs(p);
+        else
+            ido = 1:vobs(o);
+            idp = ido;
+        end
+    end
+    
+    if ~isequal(frequency(o),frequency(p))
+        error(['dseries::plus: Cannot add ' inputname(1) ' and ' inputname(2) ' (frequencies are different)!'])
+    end
+    
+    if ~isequal(nobs(o), nobs(p)) || ~isequal(firstdate(o),firstdate(p))
+        [o, p] = align(o, p);
+    end
+    if vobs(o)>=vobs(p)
+        q = copy(o);
+    else
+        q = dseries(zeros(size(p.data)), p.firstdate);
+    end
+    for i=1:vobs(q)
+        if isempty(o.ops{ido(i)})
+            if isempty(p.ops{idp(i)})
+                q.ops(i) = {sprintf('plus(%s, %s)', o.name{ido(i)}, p.name{idp(i)})};
+            else
+                q.ops(i) = {sprintf('plus(%s, %s)', o.name{ido(i)}, p.ops{idp(i)})};
+            end
+        else
+            if isempty(p.ops{idp(i)})
+                q.ops(i) = {sprintf('plus(%s, %s)', o.ops{ido(i)}, p.name{idp(i)})};
+            else
+                q.ops(i) = {sprintf('plus(%s, %s)', o.ops{ido(i)}, p.ops{idp(i)})};
+            end
+        end
+    end
+    q.data = bsxfun(@plus,o.data,p.data);
+else
+    error()
 end
 
 %@test:1
@@ -111,7 +163,8 @@ end
 %$    t(2) = dassert(ts3.vobs,2);
 %$    t(3) = dassert(ts3.nobs,10);
 %$    t(4) = dassert(ts3.data,[A(:,1)+B, A(:,2)+B],1e-15);
-%$    t(5) = dassert(ts3.name,{'plus(A1;B1)';'plus(A2;B1)'});
+%$    t(5) = dassert(ts3.name,{'A1';'A2'});
+%$    t(6) = dassert(ts3.name,{'plus(A1, B1)';'plus(A2, B1)'});
 %$ end
 %$ T = all(t);
 %@eof:1
@@ -138,7 +191,8 @@ end
 %$    t(2) = dassert(ts4.vobs,2);
 %$    t(3) = dassert(ts4.nobs,10);
 %$    t(4) = dassert(ts4.data,[A(:,1)+B, A(:,2)+B]+A,1e-15);
-%$    t(5) = dassert(ts4.name,{'plus(plus(A1;B1);A1)';'plus(plus(A2;B1);A2)'});
+%$    t(5) = dassert(ts4.name,{'A1';'A2'});
+%$    t(6) = dassert(ts4.name,{'plus(plus(A1, B1), A1)';'plus(plus(A2, B1), A2)'});
 %$ end
 %$ T = all(t);
 %@eof:2
@@ -165,7 +219,6 @@ end
 %$    t(2) = dassert(ts3.vobs,2);
 %$    t(3) = dassert(ts3.nobs,10);
 %$    t(4) = dassert(ts3.data,[A(1:5,1)+B(1:5), A(1:5,2)+B(1:5) ; NaN(5,2)],1e-15);
-%$    t(5) = dassert(ts3.name,{'plus(A1;B1)';'plus(A2;B1)'});
 %$ end
 %$ T = all(t);
 %@eof:3

@@ -56,11 +56,21 @@ if ~isequal(o.dates, p.dates)
 end
 
 if ~isequal(o.name, p.name)
+    warning off backtrace
     warning('dseries::isequal: Both input arguments do not have the same variables!')
+    warning on backtrace
 end
 
 if ~isequal(o.tex, p.tex)
+    warning off backtrace
     warning('dseries::isequal: Both input arguments do not have the same tex names!')
+    warning on backtrace
+end
+
+if ~isequal(o.ops, p.ops)
+    warning off backtrace
+    warning('dseries::isequal: Both input arguments received different treatments!')
+    warning on backtrace
 end
 
 if nargin<3

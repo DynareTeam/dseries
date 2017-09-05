@@ -75,6 +75,7 @@ d_init_flag = 0;
 if ~isequal(firstdate(b),firstdate(c))
     d_init_flag = 1;
 end
+a.ops = vertcat(b.ops,c.ops);
 a.name = vertcat(b.name,c.name);
 a.tex  = vertcat(b.tex,c.tex);
 if ~( d_nobs_flag(1) || d_init_flag(1) )

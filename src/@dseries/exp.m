@@ -66,10 +66,14 @@ o.exp_();
 %$
 %$ if t(1)
 %$      t(2) = dassert(length(p.name), 2);
-%$      t(3) = dassert(p.name{1},'exp(Variable_1)');
-%$      t(4) = dassert(p.name{2},'exp(Variable_2)');
+%$      t(3) = dassert(p.name{1},'Variable_1');
+%$      t(4) = dassert(p.name{2},'Variable_2');
 %$      t(5) = dassert(o.name{1},'Variable_1');
 %$      t(6) = dassert(o.name{2},'Variable_2');
+%$      t(7) = dassert(p.ops{1},'exp(Variable_1)');
+%$      t(8) = dassert(p.ops{2},'exp(Variable_2)');
+%$      t(9) = isempty(o.ops{1});
+%$      t(10) = isempty(o.ops{2});
 %$ end
 %$
 %$ T = all(t);

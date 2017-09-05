@@ -29,33 +29,25 @@ switch frequency(o)
   case 1
     o.data(2:end,:) = o.data(2:end,:)-o.data(1:end-1,:);
     o.data(1,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['ydiff(' o.name{i} ')']};
-        o.tex(i) = {['\Delta ' o.tex{i}]};
-    end
   case 4
     o.data(5:end,:) = o.data(5:end,:)-o.data(1:end-4,:);
     o.data(1:4,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['ydiff(' o.name{i} ')']};
-        o.tex(i) = {['\Delta_4 ' o.tex{i}]};
-    end
   case 12
     o.data(13:end,:) = o.data(13:end,:)-o.data(1:end-12,:);
     o.data(1:12,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['ydiff(' o.name{i} ')']};
-        o.tex(i) = {['\Delta_{12} ' o.tex{i}]};
-    end
   case 52
     o.data(53:end,:) = o.data(53:end,:)-o.data(1:end-52,:);
     o.data(1:52,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['ydiff(' o.name{i} ')']};
-        o.tex(i) = {['\Delta_{52} ' o.tex{i}]};
-    end
   otherwise
     error(['dseries::ydiff: object ' inputname(1) ' has unknown frequency']);
+end
+
+for i = 1:vobs(o)
+    if isempty(o.ops{i})
+        o.ops(i) = {['ydiff(' o.name{i} ')']};
+    else
+        o.ops(i) = {['ydiff(' o.ops{i} ')']};
+    end
 end
 
 %@test:1
@@ -73,8 +65,7 @@ end
 %$     DATA = NaN(4,ts.vobs);
 %$     DATA = [DATA; 4*ones(ts.nobs-4,ts.vobs)];
 %$     t(2) = dassert(ts.data,DATA);
-%$     t(3) = dassert(ts.name{1},['ydiff(A1)']);
-%$     t(4) = dassert(ts.tex{1},['\\Delta_4 A_1']);
+%$     t(3) = dassert(ts.ops{1},['ydiff(A1)']);
 %$ end
 %$
 %$ T = all(t);
@@ -95,8 +86,7 @@ end
 %$     DATA = NaN(12,ts.vobs);
 %$     DATA = [DATA; 12*ones(ts.nobs-12,ts.vobs)];
 %$     t(2) = dassert(ts.data,DATA);
-%$     t(3) = dassert(ts.name{1},['ydiff(A1)']);
-%$     t(4) = dassert(ts.tex{1},['\\Delta_{12} A_1']);
+%$     t(3) = dassert(ts.ops{1},['ydiff(A1)']);
 %$ end
 %$
 %$ T = all(t);
@@ -116,8 +106,7 @@ end
 %$     DATA = NaN(52,ts.vobs);
 %$     DATA = [DATA; 52*ones(ts.nobs-52,ts.vobs)];
 %$     t(2) = dassert(ts.data,DATA);
-%$     t(3) = dassert(ts.name{1},['ydiff(A1)']);
-%$     t(4) = dassert(ts.tex{1},['\\Delta_{52} A_1']);
+%$     t(3) = dassert(ts.ops{1},['ydiff(A1)']);
 %$ end
 %$
 %$ T = all(t);
@@ -138,8 +127,7 @@ end
 %$     DATA = NaN(1,ts.vobs);
 %$     DATA = [DATA; ones(ts.nobs-1,ts.vobs)];
 %$     t(2) = dassert(ts.data,DATA);
-%$     t(3) = dassert(ts.name{1},['ydiff(A1)']);
-%$     t(4) = dassert(ts.tex{1},['\\Delta A_1']);
+%$     t(3) = dassert(ts.ops{1},['ydiff(A1)']);
 %$ end
 %$
 %$ T = all(t);

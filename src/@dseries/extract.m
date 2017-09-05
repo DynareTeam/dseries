@@ -97,7 +97,7 @@ p.data = o.data(:,idVariableName);
 p.dates = o.dates;
 p.name = o.name(idVariableName);
 p.tex = o.tex(idVariableName);
-
+p.ops = o.ops(idVariableName);
 
 %@test:1
 %$ % Define a data set.
