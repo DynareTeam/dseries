@@ -27,7 +27,11 @@ function l = exist(o, varname) % --*-- Unitary tests --*--
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
 if ~ischar(varname)
-    error(['dseries::exist: Input arguments ''' inputname(2) ''' has to be string!'])
+    if isempty(inputname(2))
+        error(['dseries::exist: Input argument (variable name) has to be string!'])
+    else
+        error(['dseries::exist: Second input argument ''' inputname(2) ''' has to be string!'])
+    end
 end
 
 l = ~isempty(strmatch(varname, o.name, 'exact'));
