@@ -72,12 +72,12 @@ methods
                 end
                 return
             elseif ischar(varargin{1})
-                [init, data, varlist, tex] = load_data(varargin{1});
+                [init, data, varlist, tex, ops] = load_data(varargin{1});
                 o.data = data;
                 o.name = varlist;
                 o.dates = init:init+(nobs(o)-1);
                 o.tex = tex;
-                o.ops = cell(length(o.name), 1);
+                o.ops = ops;
             elseif ~isoctave() && istable(varargin{1})
                 % It is assumed that the dates are in the first column.
                 thistable = varargin{1};
@@ -98,24 +98,24 @@ methods
                 % Instantiate dseries object with a data file and force the initial date to
                 % be as given by the second input argument (initial period represented
                 % with a dates object).
-                [init, data, varlist, tex] = load_data(varargin{1});
+                [init, data, varlist, tex, ops] = load_data(varargin{1});
                 o.data = data;
                 o.name = varlist;
                 o.dates = varargin{2}:varargin{2}+(nobs(o)-1);
                 o.tex = tex;
-                o.ops = cell(length(o.name), 1);
+                o.ops = ops;
                 return
             end
             if isequal(nargin,2) && ischar(varargin{1}) && ischar(varargin{2}) && isdate(varargin{2})
                 % Instantiate dseries object with a data file and force the initial date to
                 % be as given by the second input argument (initial period represented with a
                 % string).
-                [init, data, varlist, tex] = load_data(varargin{1});
+                [init, data, varlist, tex, ops] = load_data(varargin{1});
                 o.data = data;
                 o.name = varlist;
                 o.dates = dates(varargin{2}):dates(varargin{2})+(nobs(o)-1);
                 o.tex = tex;
-                o.ops = cell(length(o.name), 1);
+                o.ops = ops;
                 return
             end
             a = varargin{1};

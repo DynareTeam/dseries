@@ -1,4 +1,4 @@
-function [init, data, varlist, tex] = load_data(filename)
+function [init, data, varlist, tex, ops] = load_data(filename)
 
 % INPUTS
 % - filename     [string]  Name of the file containing data.
@@ -33,7 +33,7 @@ elseif check_file_extension(filename,'mat')
 elseif check_file_extension(filename,'csv')
     [freq, init, data, varlist] = load_csv_file_data(filename);
     tex = [];
-    ops = [];
+    ops = cell(length(varlist), 1);
 elseif check_file_extension(filename,'xls') || check_file_extension(filename,'xlsx')
     if isglobalinbase('options_')
         % Check that the object is instantiated within a dynare session so that options_ global structure exists.
@@ -47,13 +47,11 @@ elseif check_file_extension(filename,'xls') || check_file_extension(filename,'xl
     end
     [freq, init, data, varlist] = load_xls_file_data(filename, sheet, range);
     tex = [];
-    ops = [];
+    ops = cell(length(varlist), 1);
 else
     error('dseries:WrongInputArguments', 'I''m not able to load data from %s!', filename);
 end
 
 if isempty(tex)
     tex = name2tex(varlist);
-else
-    tex = tex;
 end
