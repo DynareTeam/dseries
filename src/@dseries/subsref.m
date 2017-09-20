@@ -479,7 +479,7 @@ end
 %$    t = 0;
 %$ end
 %$
-%$ delete('ts1.csv');
+%$ delete('ts1.mat');
 %$
 %$ T = all(t);
 %@eof:7
@@ -600,7 +600,7 @@ end
 %$    t = 0;
 %$ end
 %$
-%$ delete('dynare_series.csv')
+%$ delete('dynare_series.mat')
 %$
 %$ T = all(t);
 %@eof:12

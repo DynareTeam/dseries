@@ -185,7 +185,7 @@ end
 %$    t = 0;
 %$ end
 %$
-%$ delete('dynare_series.csv');
+%$ delete('dynare_series.mat');
 %$
 %$ T = all(t);
 %@eof:4
