@@ -1,4 +1,4 @@
-function [freq, init, data, varlist, tex, ops] = load_mat_file_data(file)  % --*-- Unitary tests --*--
+function [freq, init, data, varlist, tex, ops, tags] = load_mat_file_data(file)  % --*-- Unitary tests --*--
 
 % Loads data in a matlab/octave mat-file.
 %
@@ -78,6 +78,13 @@ else
     ops = [];
 end
 
+if isfield(datafile,'TAGS__')
+    tags = datafile.TAGS__;
+    datafile = rmfield(datafile, 'TAGS__');
+else
+    tags = struct();
+end
+
 data = [];
 if isempty(varlist)
     varlist = fieldnames(datafile);
@@ -103,6 +110,8 @@ end
 %$ NAMES__ = {'hagop'; 'bedros'};
 %$ TEX__ = NAMES__;
 %$ OPS__ = {'grandad(hagop)'; 'dad(bedros)'};
+%$ TAGS__ = struct();
+%$ TAGS__.gender = {'M'; 'M'};
 %$ hagop  = [1; 2; 3; 4; 5];
 %$ bedros = [2; 3; 4; 5; 6];
 %$ save('datafile_for_test.mat');
@@ -110,7 +119,7 @@ end
 %$ % Try to read the data mat-file
 %$ t = zeros(10,1);
 %$ try
-%$     [freq, init, data, varlist, tex, ops] = load_mat_file_data('datafile_for_test');
+%$     [freq, init, data, varlist, tex, ops, tags] = load_mat_file_data('datafile_for_test');
 %$     t(1) = 1;
 %$ catch exception
 %$     t = t(1);
@@ -129,6 +138,7 @@ end
 %$ t(6) = dassert(varlist,{'hagop';'bedros'});
 %$ t(7) = dassert(tex,{'hagop';'bedros'});
 %$ t(8) = dassert(ops,{'grandad(hagop)';'dad(bedros)'});
+%$ t(8) = dassert(tags.gender,{'M';'M'});
 %$ t(9) = dassert(data(:,1),[1;2;3;4;5]);
 %$ t(10) = dassert(data(:,2),[2;3;4;5;6]);
 %$ T = all(t);
@@ -148,7 +158,7 @@ end
 %$ % Try to read the data mat-file
 %$ t = zeros(10,1);
 %$ try
-%$     [freq, init, data, varlist, tex, ops] = load_mat_file_data('datafile_for_test');
+%$     [freq, init, data, varlist, tex, ops, tags] = load_mat_file_data('datafile_for_test');
 %$     t(1) = 1;
 %$ catch exception
 %$     t = t(1);

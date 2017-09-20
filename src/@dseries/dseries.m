@@ -23,6 +23,7 @@ properties
     tex   = {};         % TeX names of the variables.
     dates = dates();    % Dates associated to the observations.
     ops   = {};         % History of operations on the variables.
+    tags  = struct();   % User defined tags on the variables.
 end
 
 methods
@@ -54,6 +55,7 @@ methods
             o.tex   = {};
             o.dates = dates();
             o.ops   = {};
+            o.tags  = struct();
             return
           case 1
             if isdates(varargin{1})
@@ -67,17 +69,19 @@ methods
                     o.tex   = {};
                     o.dates = varargin{1};
                     o.ops   = {};
+                    o.tags  = struct();
                   otherwise
                     error('dseries:WrongInputArguments', 'Input (identified as a dates object) must have a unique element!');
                 end
                 return
             elseif ischar(varargin{1})
-                [init, data, varlist, tex, ops] = load_data(varargin{1});
+                [init, data, varlist, tex, ops, tags] = load_data(varargin{1});
                 o.data = data;
                 o.name = varlist;
                 o.dates = init:init+(nobs(o)-1);
                 o.tex = tex;
                 o.ops = ops;
+                o.tags = tags;
             elseif ~isoctave() && istable(varargin{1})
                 % It is assumed that the dates are in the first column.
                 thistable = varargin{1};
@@ -86,36 +90,40 @@ methods
                 o.data = varargin{1}{:,2:end};
                 o.dates = dates(varargin{1}{1,1}{1})+(0:size(varargin{1}, 1)-1);
                 o.ops = cell(length(o.name), 1);
+                o.tags = struct();
             elseif isnumeric(varargin{1}) && isequal(ndims(varargin{1}),2)
                 o.data = varargin{1};
                 o.name = default_name(vobs(o));
                 o.tex = name2tex(o.name);
                 o.dates = dates(1,1):dates(1,1)+(nobs(o)-1);
                 o.ops = cell(length(o.name), 1);
+                o.tags = struct();
             end
           case  {2,3,4}
             if isequal(nargin,2) && ischar(varargin{1}) && isdates(varargin{2})
                 % Instantiate dseries object with a data file and force the initial date to
                 % be as given by the second input argument (initial period represented
                 % with a dates object).
-                [init, data, varlist, tex, ops] = load_data(varargin{1});
+                [init, data, varlist, tex, ops, tags] = load_data(varargin{1});
                 o.data = data;
                 o.name = varlist;
                 o.dates = varargin{2}:varargin{2}+(nobs(o)-1);
                 o.tex = tex;
                 o.ops = ops;
+                o.tags = tags;
                 return
             end
             if isequal(nargin,2) && ischar(varargin{1}) && ischar(varargin{2}) && isdate(varargin{2})
                 % Instantiate dseries object with a data file and force the initial date to
                 % be as given by the second input argument (initial period represented with a
                 % string).
-                [init, data, varlist, tex, ops] = load_data(varargin{1});
+                [init, data, varlist, tex, ops, tags] = load_data(varargin{1});
                 o.data = data;
                 o.name = varlist;
                 o.dates = dates(varargin{2}):dates(varargin{2})+(nobs(o)-1);
                 o.tex = tex;
                 o.ops = ops;
+                o.tags = tags;
                 return
             end
             a = varargin{1};
@@ -177,6 +185,7 @@ methods
                 o.name = default_name(vobs(o));
             end
             o.ops = cell(length(o.name), 1);
+            o.tags = struct();
             if ~isempty(d)
                 if vobs(o)==length(d)
                     for i=1:vobs(o)

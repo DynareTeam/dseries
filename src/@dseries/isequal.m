@@ -73,6 +73,13 @@ if ~isequal(o.ops, p.ops)
     warning on backtrace
 end
 
+if ~isequal(o.tags, p.tags)
+    warning off backtrace
+    warning('dseries::isequal: Both input arguments have different tags!')
+    warning on backtrace
+end
+
+
 if nargin<3
     b = isequal(o.data, p.data);
 else

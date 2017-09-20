@@ -65,7 +65,7 @@ function B = subsref(A, S) % --*-- Unitary tests --*--
 switch S(1).type
   case '.'
     switch S(1).subs
-      case {'data','name','tex','dates','ops'}        % Public members.
+      case {'data','name','tex','dates','ops', 'tags'}        % Public members.
         if length(S)>1 && isequal(S(2).type,'()') && isempty(S(2).subs)
             error(['dseries::subsref: ' S(1).subs ' is not a method but a member!'])
         end
@@ -169,7 +169,7 @@ switch S(1).type
         else
             error('dseries::subsref: Call to size method must come in last position!')
         end
-      case {'set_names','rename','rename_','tex_rename','tex_rename_'}
+      case {'set_names','rename','rename_','tex_rename','tex_rename_', 'tag'}
         B = feval(S(1).subs,A,S(2).subs{:});
         S = shiftS(S,1);
       case {'disp'}

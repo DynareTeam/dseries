@@ -65,10 +65,31 @@ switch format
             fprintf(fid,[ '''' o.ops{i}  '''']);
         end
         if i<vobs(o)
-            fprintf(fid,'; ');
+            fprintf(fid,';');
         end
     end
     fprintf(fid,'};\n\n');
+    if ~isempty(fieldnames(o.tags))
+        % User has defined tags on the variables.
+        tagnames = fieldnames(o.tags);
+        TAGS__ = fprintf(fid, 'struct();\n');
+        for i=1:length(tagnames)
+            fprintf(fid, 'TAGS__.%s = cell(%s, 1);\n', tagnames{i}, num2str(vobs(o)));
+            for j=1:vobs(o)
+                if ~isempty(o.tags.(tagnames{i}){j})
+                    if ischar(o.tags.(tagnames{i}){j})
+                        fprintf(fid, 'TAGS__.%s(%s) = {''%s''};\n', tagnames{i}, num2str(j), o.tags.(tagnames{i}){j});
+                    elseif isnumeric(o.tags.(tagnames{i}){j}) && iscalar(o.tags.(tagnames{i}){j})
+                        fprintf(fid, 'TAGS__.%s(%s) = {%s};\n', tagnames{i}, num2str(j), o.tags.(tagnames{i}){j});
+                    else
+                        error('dseries::tags: Cannot save this type of tag!')
+                    end
+                end
+            end
+            fprintf(fid, '\n');
+        end
+        fprintf(fid,'\n\n');
+    end
     for v = 1:vobs(o)
         fprintf(fid,'%s = [\n', o.name{v});
         fprintf(fid,'%15.8g\n', o.data(1:end-1,v));
@@ -81,6 +102,7 @@ switch format
     NAMES__ = o.name;
     TEX__ = o.tex;
     OPS__ = o.ops;
+    TAGS__ = o.tags;
     str = [];
     for v = 1:vobs(o)
         str = sprintf('%s %s = o.data(:,%s);', str, o.name{v}, num2str(v));
@@ -90,7 +112,7 @@ switch format
     if ismember([basename, '.mat'], {currentdirectorycontent.name})
         copyfile([basename, '.mat'], [basename, '.old.mat']);
     end
-    save([basename '.mat'], 'INIT__', 'FREQ__', 'NAMES__', 'TEX__', 'OPS__', o.name{:});
+    save([basename '.mat'], 'INIT__', 'FREQ__', 'NAMES__', 'TEX__', 'OPS__', 'TAGS__', o.name{:});
   case 'csv'
     currentdirectorycontent = dir();
     if ismember([basename, '.csv'],{currentdirectorycontent.name})

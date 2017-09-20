@@ -48,9 +48,13 @@ end
 % Keep the second input argument constant.
 p = copy(p);
 
+% Add NaNs if necessary.
 [o, p] = align(o, p);
 
 n = length(id);
+
+% Get tag names in p
+ptagnames = fieldnames(p.tags);
 
 if n>1
     [id, jd] = sort(id);
@@ -58,13 +62,50 @@ if n>1
     p.name = p.name(jd);
     p.tex = p.tex(jd);
     p.ops = p.ops(jd);
+    if ~isempty(ptagnames)
+        for i = 1:length(ptagnames)
+            p.tags.(ptagnames{i}) = p.tags.(ptagnames{i})(jd);
+        end
+    end
 end
+
+% Get tag names in o
+otagnames = fieldnames(o.tags);
+
+% Merge tag names
+if isempty(otagnames) && isempty(ptagnames)
+    notags = true;
+else
+    notags = false;
+    dtagnames_o = setdiff(ptagnames, otagnames);
+    dtagnames_p = setdiff(otagnames, ptagnames);
+    if ~isempty(dtagnames_o)
+        % If p has tags that are not in o...
+        for i=1:length(dtagnames_o)
+            o.tags.(dtagnames_o{i}) = cell(vobs(o), 1);
+        end
+    end
+    if ~isempty(dtagnames_p)
+        % If o has tags that are not in p...
+        for i=1:length(dtagnames_p)
+            p.tags.(dtagnames_p{i}) = cell(vobs(p), 1);
+        end
+    end
+end
+
+% Update list of tag names in o.
+otagnames = fieldnames(o.tags);
 
 for i=1:n
     o.data = insert_column_vector_in_a_matrix(o.data, p.data(:,i),id(i));
     o.name = insert_object_in_a_one_dimensional_cell_array(o.name, p.name{i}, id(i));
     o.tex = insert_object_in_a_one_dimensional_cell_array(o.tex, p.tex{i}, id(i));
     o.ops = insert_object_in_a_one_dimensional_cell_array(o.ops, p.ops{i}, id(i));
+    if ~notags
+        for j=1:length(otagnames)
+            o.tags.(otagnames{j}) = insert_object_in_a_one_dimensional_cell_array(o.tags.(otagnames{j}), p.tags.(otagnames{j}){i}, id(i));
+        end
+    end
     id = id+1;
 end
 
@@ -83,6 +124,16 @@ end
 %$ % Instantiate two dseries objects.
 %$ ts1 = dseries(A, A_init, A_name,[]);
 %$ ts2 = dseries(B, B_init, B_name,[]);
+%$ ts1.tag('t1');
+%$ ts1.tag('t1','A1',1);
+%$ ts1.tag('t1','A2',1);
+%$ ts1.tag('t1','A3',0);
+%$ ts2.tag('t1');
+%$ ts2.tag('t1','B1',1);
+%$ ts2.tag('t1','B2',1);
+%$ ts2.tag('t2');
+%$ ts2.tag('t2','B1','toto');
+%$ ts2.tag('t2','B2','titi');
 %$
 %$ try
 %$    ts1 = insert(ts1,ts2,[1,2]);
@@ -91,11 +142,14 @@ end
 %$    t = 0;
 %$ end
 %$
-%$ if length(t)>1
-%$    t(2) = dassert(ts1.vobs,{'B1';'A1';'B2';'A3'});
+%$
+%$ if t(1)
+%$    t(2) = dassert(ts1.name,{'B1';'A1';'B2';'A2';'A3'});
 %$    t(3) = dassert(ts1.nobs,10);
 %$    eB = [NaN(2,2); B; NaN(3,2)];
 %$    t(4) = dassert(ts1.data,[eB(:,1), A(:,1), eB(:,2), A(:,2:3)], 1e-15);
+%$    t(5) = dassert(ts1.tags.t1,{1; 1; 1; 1; 0});
+%$    t(6) = dassert(ts1.tags.t2,{'toto'; []; 'titi'; []; []});
 %$ end
 %$ T = all(t);
 %@eof:1

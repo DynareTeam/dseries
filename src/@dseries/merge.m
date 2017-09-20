@@ -42,11 +42,34 @@ if ~isequal(frequency(o), frequency(p))
 end
 
 q = dseries();
+
 [q.name, IBC, junk] = unique([o.name; p.name], 'last');
+
 tex = [o.tex; p.tex];
 q.tex = tex(IBC);
+
 ops = [o.ops; p.ops];
 q.ops = ops(IBC);
+
+otagnames = fieldnames(o.tags);
+ptagnames = fieldnames(p.tags);
+qtagnames = union(otagnames, ptagnames);
+if isempty(qtagnames)
+    q.tags = struct();
+else
+    for i=1:length(qtagnames)
+        if ismember(qtagnames{i}, otagnames) && ismember(qtagnames{i}, ptagnames)
+            q.tags.(qtagnames{i}) = vertcat(o.tags.(otagnames{i}), p.tags.(ptagnames{i}));
+        elseif ismember(qtagnames{i}, otagnames)
+            q.tags.(qtagnames{i}) = vertcat(o.tags.(qtagnames{i}), cell(vobs(p), 1));
+        elseif ismember(qtagnames{i}, ptagnames)
+            q.tags.(qtagnames{i}) = vertcat(cell(vobs(o), 1), p.tags.(qtagnames{i}));
+        else
+            error('dseries::horzcat: This is a bug!')
+        end
+        q.tags.(qtagnames{i}) = q.tags.(qtagnames{i})(IBC);
+    end
+end
 
 if nobs(o) == 0
     q = copy(p);
@@ -93,22 +116,26 @@ q.dates = q_init:q_init+(nobs(q)-1);
 %$ % Define names
 %$ A_name = {'A1';'A2'}; B_name = {'A1'};
 %$
-%$ t = zeros(4,1);
-%$
-%$ % Instantiate a time series object.
+%$ % Instantiate two time series objects and merge.
 %$ try
 %$    ts1 = dseries(A,[],A_name,[]);
+%$    ts1.tag('type');
+%$    ts1.tag('type', 'A1', 'Stock');
+%$    ts1.tag('type', 'A2', 'Flow');
 %$    ts2 = dseries(B,[],B_name,[]);
+%$    ts2.tag('type');
+%$    ts2.tag('type', 'A1', 'Flow');
 %$    ts3 = merge(ts1,ts2);
 %$    t(1) = 1;
 %$ catch
 %$    t = 0;
 %$ end
 %$
-%$ if length(t)>1
+%$ if t(1)
 %$    t(2) = dassert(ts3.vobs,2);
 %$    t(3) = dassert(ts3.nobs,10);
 %$    t(4) = dassert(ts3.data,[B, A(:,2)],1e-15);
+%$    t(5) = dassert(ts3.tags.type, {'Flow';'Flow'});
 %$ end
 %$ T = all(t);
 %@eof:1
@@ -120,12 +147,15 @@ q.dates = q_init:q_init+(nobs(q)-1);
 %$ % Define names
 %$ A_name = {'A1';'A2'}; B_name = {'B1'};
 %$
-%$ t = zeros(4,1);
-%$
-%$ % Instantiate a time series object.
+%$ % Instantiate two time series objects and merge them.
 %$ try
 %$    ts1 = dseries(A,[],A_name,[]);
+%$    ts1.tag('t1');
+%$    ts1.tag('t1', 'A1', 'Stock');
+%$    ts1.tag('t1', 'A2', 'Flow');
 %$    ts2 = dseries(B,[],B_name,[]);
+%$    ts2.tag('t2');
+%$    ts2.tag('t2', 'B1', 1);
 %$    ts3 = merge(ts1,ts2);
 %$    t(1) = 1;
 %$ catch
@@ -136,6 +166,8 @@ q.dates = q_init:q_init+(nobs(q)-1);
 %$    t(2) = dassert(ts3.vobs,3);
 %$    t(3) = dassert(ts3.nobs,10);
 %$    t(4) = dassert(ts3.data,[A, B],1e-15);
+%$    t(5) = dassert(ts3.tags.t1, {'Flow';'Flow';[]});
+%$    t(6) = dassert(ts3.tags.t2, {[];[];1});
 %$ end
 %$ T = all(t);
 %@eof:2
