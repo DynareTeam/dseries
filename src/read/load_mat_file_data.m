@@ -1,4 +1,4 @@
-function [freq,init,data,varlist,tex] = load_mat_file_data(file)  % --*-- Unitary tests --*--
+function [freq, init, data, varlist, tex, ops] = load_mat_file_data(file)  % --*-- Unitary tests --*--
 
 % Loads data in a matlab/octave mat-file.
 %
@@ -71,6 +71,13 @@ else
     tex = [];
 end
 
+if isfield(datafile,'OPS__')
+    ops = datafile.OPS__;
+    datafile = rmfield(datafile, 'OPS__');
+else
+    ops = [];
+end
+
 data = [];
 if isempty(varlist)
     varlist = fieldnames(datafile);
@@ -85,20 +92,25 @@ for i=1:length(varlist)
     end
 end
 
+if isempty(ops)
+    ops = cell(length(varlist), 1);
+end
+
 %@test:1
 %$ % Create a data mat-file
 %$ FREQ__ = 12;
 %$ INIT__ = '1938M11';
 %$ NAMES__ = {'hagop'; 'bedros'};
 %$ TEX__ = NAMES__;
+%$ OPS__ = {'grandad(hagop)'; 'dad(bedros)'};
 %$ hagop  = [1; 2; 3; 4; 5];
 %$ bedros = [2; 3; 4; 5; 6];
 %$ save('datafile_for_test.mat');
 %$
 %$ % Try to read the data mat-file
-%$ t = zeros(8,1);
+%$ t = zeros(10,1);
 %$ try
-%$     [freq,init,data,varlist,tex] = load_mat_file_data('datafile_for_test');
+%$     [freq, init, data, varlist, tex, ops] = load_mat_file_data('datafile_for_test');
 %$     t(1) = 1;
 %$ catch exception
 %$     t = t(1);
@@ -115,9 +127,10 @@ end
 %$ t(4) = dassert(init.freq,12);
 %$ t(5) = dassert(init.time,[1938 11]);
 %$ t(6) = dassert(varlist,{'hagop';'bedros'});
-%$ t(7) = dassert(varlist,{'hagop';'bedros'});
-%$ t(8) = dassert(data(:,1),[1;2;3;4;5]);
-%$ t(9) = dassert(data(:,2),[2;3;4;5;6]);
+%$ t(7) = dassert(tex,{'hagop';'bedros'});
+%$ t(8) = dassert(ops,{'grandad(hagop)';'dad(bedros)'});
+%$ t(9) = dassert(data(:,1),[1;2;3;4;5]);
+%$ t(10) = dassert(data(:,2),[2;3;4;5;6]);
 %$ T = all(t);
 %@eof:1
 
@@ -127,14 +140,15 @@ end
 %$ INIT__ = '1938M11';
 %$ NAMES__ = {'hagop'; 'bedros'};
 %$ TEX__ = NAMES__;
+%$ OPS__ = {'grandad(hagop)'; 'dad(bedros)'};
 %$ hagop  = [1, 2, 3, 4, 5];
 %$ bedros = [2, 3, 4, 5, 6];
 %$ save('datafile_for_test.mat');
 %$
 %$ % Try to read the data mat-file
-%$ t = zeros(8,1);
+%$ t = zeros(10,1);
 %$ try
-%$     [freq,init,data,varlist,tex] = load_mat_file_data('datafile_for_test');
+%$     [freq, init, data, varlist, tex, ops] = load_mat_file_data('datafile_for_test');
 %$     t(1) = 1;
 %$ catch exception
 %$     t = t(1);
@@ -151,8 +165,9 @@ end
 %$ t(4) = dassert(init.freq,12);
 %$ t(5) = dassert(init.time,[1938 11]);
 %$ t(6) = dassert(varlist,{'hagop';'bedros'});
-%$ t(7) = dassert(varlist,{'hagop';'bedros'});
-%$ t(8) = dassert(data(:,1),[1;2;3;4;5]);
-%$ t(9) = dassert(data(:,2),[2;3;4;5;6]);
+%$ t(7) = dassert(tex,{'hagop';'bedros'});
+%$ t(8) = dassert(ops,{'grandad(hagop)';'dad(bedros)'});
+%$ t(9) = dassert(data(:,1),[1;2;3;4;5]);
+%$ t(10) = dassert(data(:,2),[2;3;4;5;6]);
 %$ T = all(t);
 %@eof:2
