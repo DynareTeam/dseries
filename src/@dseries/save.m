@@ -20,7 +20,7 @@ function save(o, basename, format) % --*-- Unitary tests --*--
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
 if nargin<3 || isempty(format)
-    format = 'csv';
+    format = 'mat';
 end
 
 if nargin<2 || isempty(basename)
