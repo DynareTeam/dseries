@@ -1,4 +1,4 @@
-function val = subsasgn(val, idx, rhs) % --*-- Unitary tests --*--
+function val = subsasgn(val, idx, rhs)
 
 % Copyright (C) 2017 Dynare Team
 %

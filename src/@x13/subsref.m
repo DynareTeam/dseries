@@ -1,17 +1,15 @@
-function o = subsref(o, S) % --*-- Unitary tests --*--
+function o = subsref(o, S)
 
 % Overloads the subsref method.
 
 % Copyright (C) 2017 Dynare Team
 %
-% This file is part of Dynare.
-%
-% Dynare is free software: you can redistribute it and/or modify
+% This code is free software: you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
 % the Free Software Foundation, either version 3 of the License, or
 % (at your option) any later version.
 %
-% Dynare is distributed in the hope that it will be useful,
+% Dynare dseries submodule is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 % GNU General Public License for more details.
@@ -22,24 +20,24 @@ function o = subsref(o, S) % --*-- Unitary tests --*--
 switch S(1).type
   case '.'
     switch S(1).subs
-      case {'arima','automdl','regression','transform','outlier', 'forecast', 'check', 'x11', 'estimate'}
+      case {'x','y'}
         if isequal(length(S), 1)
-            % Just print the member.
-            disp(o.(S(1).subs))
+            o = builtin('subsref', o, S(1));
+        else
+            if isequal(S(2).type,'.')
+                o = builtin('subsref', o.(S(1).subs), S(2));
+            end
+        end
+      case {'commands'}
+        o = builtin('subsref', o, S(1));
+      case {'arima','automdl','regression','transform','outlier', 'forecast', 'check', 'x11', 'estimate','composite',...
+            'force','history','metadata','identify','pickmdl','seats','slidingspans','spectrum','x11regression'}
+        if isequal(length(S), 1)
+            o = builtin('subsref', o, S(1));
         else
             if isequal(S(2).type,'()')
                 if ~ismember(S(1).subs, o.commands)
-                    switch S(1).subs
-                      case 'arima'
-                        if ismember('automdl', o.commands)
-                            error('x13:arima: ARIMA command is not compatible with AUTOMDL command!')
-                        end
-                      case 'automdl'
-                        if ismember('arima', o.commands)
-                            error('x13:automdl: AUTOMDL command is not compatible with ARIMA command!')
-                        end
-                      otherwise
-                    end
+                    checkcommandcompatibility(o, S(1).subs);
                     o.commands(end+1) = {S(1).subs};
                 end
                 if isempty(S(2).subs)
@@ -53,11 +51,14 @@ switch S(1).type
                     for i=1:2:length(S(2).subs)
                         if isoption(S(1).subs, S(2).subs{i})
                             o.(S(1).subs) = setoption(o.(S(1).subs), S(2).subs{i}, S(2).subs{i+1});
+                            checkoptioncompatibility(o);
                         else
                             disp(sprintf('Option %s is not available in block %s!', S(2).subs{i}, S(1).subs))
                         end
                     end
                 end
+            elseif isequal(S(2).type,'.')
+                o = builtin('subsref', o.(S(1).subs), S(2));
             else
                 error('x13:%s: Wrong calling sequence!', S(1).subs)
             end
@@ -80,7 +81,13 @@ switch S(1).type
         end
       case 'results'
         % Returns a structure with all the results.
-        o = o.results;
+        if isequal(length(S), 1)
+            o = builtin('subsref', o, S(1));
+        else
+            if isequal(S(2).type,'.')
+                o = builtin('subsref', o.(S(1).subs), S(2));
+            end
+        end
       otherwise
         error('x13:: I do not understand what you are asking for!')
     end

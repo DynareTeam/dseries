@@ -1,4 +1,4 @@
-classdef x13<handle % --*-- Unitary tests --*--
+classdef x13<handle
 
 % Class for X13 toolbox.
 
@@ -18,30 +18,39 @@ classdef x13<handle % --*-- Unitary tests --*--
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
 properties
-    y          = [];         % dseries object with a single variable.
-    x          = [];         % dseries object with an arbitrary number of variables (to be used in the REGRESSION block).
-    arima      = [];         % ARIMA model.
-    automdl    = [];         % ARIMA model selection.
-    regression = [];         % Regression model.
-    estimate   = [];         % Estimation options.
-    transform  = [];         % Transform command  applied to y.
-    outlier    = [];         % Outlier command.
-    forecast   = [];         % Forecast command.
-    check      = [];         % Check command.
-    x11        = [];         % X11 cmmand
-    results    = [];         % Estimation results
-    commands   = {};         % List of commands.
+    y             = [];  % dseries object with a single variable.
+    x             = [];  % dseries object with an arbitrary number of variables (to be used in the REGRESSION block).
+    arima         = [];  % ARIMA model.
+    automdl       = [];  % ARIMA model selection.
+    regression    = [];  % Regression command, specification for including regression variables in a regARIMA model, or for specifying regression variables whose effects are to be removed by the identify spec to aid ARIMA model identification.
+    estimate      = [];  % Estimation command, estimates the regARIMA model specified with the regression and arima commands.
+    transform     = [];  % Transform command, transforms or adjusts the series prior to estimating a regARIMA model.
+    outlier       = [];  % Outlier command, performs automatic detection of additive (point) outliers, temporary change outliers, level shifts, or any combination of the three using the specified model.
+    forecast      = [];  % Forecast command, forecasts and/or backcasts the time series y using the estimated model.
+    check         = [];  % Check command, produces statistics for diagnostic checking of residuals from the estimated model.
+    x11           = [];  % X11 command, invokes seasonal adjustment by an enhanced version of the methodology of the Census Bureau X-11 and X-11Q program.
+    force         = [];  % Force command, allow users to force yearly totals of the seasonally adjusted series to equal those of the original series for convenience.
+    history       = [];  % History command, requests a sequence of runs from a sequence of truncated versions of the time series.
+    metadata      = [];  % Metadata command, allows users to insert metadata into the diagnostic summary file.
+    identify      = [];  % Identify command, produces tables and line printer plots of sample ACFs and PACFs for identifying the ARIMA part of a regARIMA model.
+    pickmdl       = [];  % Pickmdl command, automatic model selection procedure for the ARIMA part of the regARIMA model.
+    seats         = [];  % Seats command, invokes the production of model based signal extraction using SEATS, a seasonal adjustment program developed by Victor Gomez and Agustin Maravall at the Bank of Spain.
+    slidingspans  = [];  % Slidingspans command, compares different features of seasonal adjustment output from overlapping subspans of the time series data.
+    spectrum      = [];  % Spectrum command, spectrum diagnostics to detect seasonality or trading day effects in monthly series.
+    x11regression = [];  % X11Regression command, estimates calendar effects by regression modeling of the irregular component with predefined or user-defined regressors.
+    results       = [];  % Estimation results.
+    commands      = {};  % List of commands.
 end
 
 methods
-        function o = x13(y, x)
-        % Constructor for the x13 class.
-        %
-        % INPUTS
-        % - y      [dseries]    Data.
-        %
-        % OUPUTS
-        % - o      [x13]        Empty object except for the data.
+    function o = x13(y, x)
+    % Constructor for the x13 class.
+    %
+    % INPUTS
+    % - y      [dseries]    Data.
+    %
+    % OUPUTS
+    % - o      [x13]        Empty object except for the data.
         if ~nargin
             o.y = dseries();
             o.x = dseries();
@@ -54,6 +63,15 @@ methods
             o.forecast = setdefaultmember('forecast');
             o.check = setdefaultmember('check');
             o.x11 = setdefaultmember('x11');
+            o.force = setdefaultmember('force');
+            o.history = setdefaultmember('history');
+            o.metadata = setdefaultmember('metadata');
+            o.identify = setdefaultmember('identify');
+            o.pickmdl = setdefaultmember('pickmdl');
+            o.seats = setdefaultmember('seats');
+            o.slidingspans = setdefaultmember('slidingspans');
+            o.spectrum = setdefaultmember('spectrum');
+            o.x11regression = setdefaultmember('x11regression');
             o.results = struct();
             o.commands = {};
             return
@@ -86,8 +104,18 @@ methods
         o.forecast = setdefaultmember('forecast');
         o.check = setdefaultmember('check');
         o.x11 = setdefaultmember('x11');
+        o.force = setdefaultmember('force');
+        o.history = setdefaultmember('history');
+        o.metadata = setdefaultmember('metadata');
+        o.identify = setdefaultmember('identify');
+        o.pickmdl = setdefaultmember('pickmdl');
+        o.seats = setdefaultmember('seats');
+        o.slidingspans = setdefaultmember('slidingspans');
+        o.spectrum = setdefaultmember('spectrum');
+        o.x11regression = setdefaultmember('x11regression');
         o.results = struct();
         o.commands = {};
-        end
+    end
 end
+
 end
