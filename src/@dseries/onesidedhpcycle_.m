@@ -1,4 +1,4 @@
-function o = onesidedhpcycle_(o, lambda) % --*-- Unitary tests --*--
+function o = onesidedhpcycle_(o, lambda, init) % --*-- Unitary tests --*--
 
 % Extracts the cycle component from a dseries object using a one sided HP filter.
 %
@@ -28,7 +28,12 @@ function o = onesidedhpcycle_(o, lambda) % --*-- Unitary tests --*--
 
 if nargin>1
     if lambda<=0
-        error(['dseries::onesidedhpcycle: Lambda must be a positive integer!'])
+        error('dseries::onesidedhpcycle: Lambda must be a positive integer!')
+    end
+    if nargin>2
+        if ~isequal(init, 'hpfilter')
+            error('dseries::onesidedhpcycle: Unknown option!')
+        end
     end
 else
     lambda = [];
@@ -37,20 +42,42 @@ end
 for i=1:vobs(o)
     if isempty(o.ops{i})
         if isempty(lambda)
-            o.ops(i) = {sprintf('onesidedhpcycle(%s, [])', o.name{i})};
+            if nargin>2
+                o.ops(i) = {sprintf('onesidedhpcycle(%s, [], ''%s'')', o.name{i}, init)};
+            else
+                o.ops(i) = {sprintf('onesidedhpcycle(%s, [])', o.name{i})};
+            end
         else
-            o.ops(i) = {sprintf('onesidedhpcycle(%s, %s)', o.name{i}, num2str(lambda))};
+            if nargin>2
+                o.ops(i) = {sprintf('onesidedhpcycle(%s, %s, ''%s'')', o.name{i}, num2str(lambda), init)};
+            else
+                o.ops(i) = {sprintf('onesidedhpcycle(%s, %s)', o.name{i}, num2str(lambda))};
+            end
         end
     else
         if isempty(lambda)
-            o.ops(i) = {sprintf('onesidedhpcycle(%s, [])', o.ops{i})};
+            if nargin>2
+                o.ops(i) = {sprintf('onesidedhpcycle(%s, [], ''%s'')', o.ops{i}, init)};
+            else
+                o.ops(i) = {sprintf('onesidedhpcycle(%s, [])', o.ops{i})};
+            end
         else
-            o.ops(i) = {sprintf('onesidedhpcycle(%s, %s)', o.ops{i}, num2str(lambda))};
+            if nargin>2
+                o.ops(i) = {sprintf('onesidedhpcycle(%s, %s, ''%s'')', o.ops{i}, num2str(lambda), init)};
+            else
+                o.ops(i) = {sprintf('onesidedhpcycle(%s, %s)', o.ops{i}, num2str(lambda))};
+            end
         end
     end
 end
 
-[~, o.data] = one_sided_hp_filter(o.data, lambda);
+if nargin>2
+    trend = o.hptrend(lambda);
+    x0 = trend.data(1:2,:);
+    [~, o.data] = one_sided_hp_filter(o.data, lambda, x0);
+else    
+    [~, o.data] = one_sided_hp_filter(o.data, lambda);
+end
 
 return
 

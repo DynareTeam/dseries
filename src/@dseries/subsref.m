@@ -90,7 +90,7 @@ switch S(1).type
       case 'freq'
         % Returns an integer characterizing the data frequency (1, 4, 12 or 52)
         B = A.dates.freq;
-      case {'lag','lag_','lead','lead_','hptrend','hptrend_','hpcycle','hpcycle_','onesidedhptrend','onesidedhptrend_','onesidedhpcycle','onesidedhpcycle_','chain','chain_','detrend','detrend_','exist','mean','std','center','center_'} % Methods with less than two arguments.
+      case {'lag','lag_','lead','lead_','hptrend','hptrend_','hpcycle','hpcycle_','chain','chain_','detrend','detrend_','exist','mean','std','center','center_'} % Methods with less than two arguments.
         if length(S)>1 && isequal(S(2).type,'()')
             if isempty(S(2).subs)
                 B = feval(S(1).subs,A);
@@ -105,7 +105,7 @@ switch S(1).type
         else
             B = feval(S(1).subs,A);
         end
-      case {'cumsum','cumsum_','insert','pop','pop_','cumprod','cumprod_','remove','remove_'} % Methods with less than three argument.
+      case {'cumsum','cumsum_','insert','pop','pop_','cumprod','cumprod_','remove','remove_','onesidedhptrend','onesidedhptrend_','onesidedhpcycle','onesidedhpcycle_'} % Methods with less than three argument.
         if length(S)>1 && isequal(S(2).type,'()')
             if isempty(S(2).subs)
                 B = feval(S(1).subs,A);

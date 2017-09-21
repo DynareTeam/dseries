@@ -1,4 +1,4 @@
-function o = onesidedhptrend(o, lambda) % --*-- Unitary tests --*--
+function o = onesidedhptrend(o, lambda, init) % --*-- Unitary tests --*--
 
 % Extracts the trend component from a dseries object using the one sided HP filter.
 %
@@ -30,12 +30,21 @@ if nargin>1
     if lambda<=0
         error(['dseries::onesidedhptrend: Lambda must be a positive integer!'])
     end
+    if nargin>2
+        if ~isequal(init, 'hpfilter')
+            error('dseries::onesidedhpcycle: Unknown option!')
+        end
+    end
 else
     lambda = [];
 end
 
 o = copy(o);
-o.onesidedhptrend_(lambda);
+if nargin<3
+    o.onesidedhptrend_(lambda);
+else
+    o.onesidedhptrend_(lambda, init);
+end
 
 return
 

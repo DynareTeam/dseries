@@ -1,4 +1,4 @@
-function o = onesidedhpcycle(o, lambda) % --*-- Unitary tests --*--
+function o = onesidedhpcycle(o, lambda, init) % --*-- Unitary tests --*--
 
 % Extracts the cycle component from a dseries object using the one sided HP filter.
 %
@@ -28,14 +28,23 @@ function o = onesidedhpcycle(o, lambda) % --*-- Unitary tests --*--
 
 if nargin>1
     if lambda<=0
-        error(['dseries::onesidedhptrend: Lambda must be a positive integer!'])
+        error(['dseries::onesidedhpcycle: Lambda must be a positive integer!'])
+    end
+    if nargin>2
+        if ~isequal(init, 'hpfilter')
+            error('dseries::onesidedhpcycle: Unknown option!')
+        end
     end
 else
     lambda = [];
 end
 
 o = copy(o);
-o.onesidedhpcycle_(lambda);
+if nargin<3
+    o.onesidedhpcycle_(lambda);
+else
+    o.onesidedhpcycle_(lambda, init);
+end
 
 return
 
