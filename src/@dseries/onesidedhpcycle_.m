@@ -28,7 +28,7 @@ function o = onesidedhpcycle_(o, lambda) % --*-- Unitary tests --*--
 
 if nargin>1
     if lambda<=0
-        error(['dseries::onesidedhptrend: Lambda must be a positive integer!'])
+        error(['dseries::onesidedhpcycle: Lambda must be a positive integer!'])
     end
 else
     lambda = [];
