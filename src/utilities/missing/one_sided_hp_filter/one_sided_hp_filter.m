@@ -70,7 +70,7 @@ Q=[q,0;
 R=1;            % variance observation equation error
 
 for k=1:n %Run the Kalman filter for each variable
-    if nargin < 4 || isempty(x_user) %no intial value for state, extrapolate back two periods from the observations
+    if nargin < 3 || isempty(x_user) %no intial value for state, extrapolate back two periods from the observations
         x=[2*y(1,k)-y(2,k);
            3*y(1,k)-2*y(2,k)];
     else
