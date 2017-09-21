@@ -28,6 +28,8 @@ p.data  = o.data;
 p.name  = o.name;
 p.tex   = o.tex;
 p.dates = o.dates;
+p.ops   = o.ops;
+p.tags  = o.tags;
 
 %@test:1
 %$ % Define a dates object

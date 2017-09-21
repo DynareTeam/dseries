@@ -61,10 +61,12 @@ switch nargin
             o.data = cumsumnan(o.data);
         end
     end
-    % Change the name of the variables
     for i=1:vobs(o)
-        o.name(i) = {['cumsum(' o.name{i} ')']};
-        o.tex(i) = {['\sum_t ' o.tex{i}]};
+        if isempty(o.ops{i})
+            o.ops(i) = {['cumsum(' o.name{i} ')']};
+        else
+            o.ops(i) = {['cumsum(' o.ops{i} ')']};
+        end
     end
   case 2
     if isdseries(varargin{2})

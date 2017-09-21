@@ -65,7 +65,7 @@ function B = subsref(A, S) % --*-- Unitary tests --*--
 switch S(1).type
   case '.'
     switch S(1).subs
-      case {'data','name','tex','dates'}        % Public members.
+      case {'data','name','tex','dates','ops', 'tags'}        % Public members.
         if length(S)>1 && isequal(S(2).type,'()') && isempty(S(2).subs)
             error(['dseries::subsref: ' S(1).subs ' is not a method but a member!'])
         end
@@ -169,7 +169,7 @@ switch S(1).type
         else
             error('dseries::subsref: Call to size method must come in last position!')
         end
-      case {'set_names','rename','rename_','tex_rename','tex_rename_'}
+      case {'set_names','rename','rename_','tex_rename','tex_rename_', 'tag'}
         B = feval(S(1).subs,A,S(2).subs{:});
         S = shiftS(S,1);
       case {'disp'}
@@ -183,6 +183,7 @@ switch S(1).type
             B.name = A.name(ndx);
             B.tex = A.tex(ndx);
             B.dates = A.dates;
+            B.ops = A.ops(ndx);
         else
             error('dseries::subsref: Unknown public method, public member or variable!')
         end
@@ -478,7 +479,7 @@ end
 %$    t = 0;
 %$ end
 %$
-%$ delete('ts1.csv');
+%$ delete('ts1.mat');
 %$
 %$ T = all(t);
 %@eof:7
@@ -599,7 +600,7 @@ end
 %$    t = 0;
 %$ end
 %$
-%$ delete('dynare_series.csv')
+%$ delete('dynare_series.mat')
 %$
 %$ T = all(t);
 %@eof:12

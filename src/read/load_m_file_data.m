@@ -1,4 +1,4 @@
-function [freq,init,data,varlist,tex] = load_m_file_data(file)
+function [freq, init, data, varlist, tex, ops, tags] = load_m_file_data(file) % --*-- Unitary tests --*--
 
 % Loads data in a matlab/octave script.
 %
@@ -77,6 +77,19 @@ else
     tex = [];
 end
 
+if exist('OPS__','var')
+    ops = OPS__;
+    clear('OPS__');
+else
+    ops = [];
+end
+
+if exist('TAGS__','var')
+    tags = TAGS__;
+    clear('TAGS__');
+else
+    tags = struct();
+end
 
 if isempty(varlist0)
     list_of_variables = whos();
@@ -94,6 +107,8 @@ if isempty(varlist0)
                 || isequal(list_of_variables(current_variable_index).name,'varlist0') ...
                 || isequal(list_of_variables(current_variable_index).name,'list_of_variables') ...
                 || isequal(list_of_variables(current_variable_index).name,'tex') ...
+                || isequal(list_of_variables(current_variable_index).name,'ops') ...
+                || isequal(list_of_variables(current_variable_index).name,'tags') ...
                 continue
         end
         if list_of_variables(current_variable_index).global || list_of_variables(current_variable_index).persistent
@@ -122,6 +137,10 @@ else
     varlist = varlist0;
 end
 
+if isempty(ops)
+    ops = cell(length(varlist), 1);
+end
+
 %@test:1
 %$ % Create a data m-file
 %$ fid = fopen('data_m_file.m','w');
@@ -129,14 +148,20 @@ end
 %$ fprintf(fid,'INIT__ = ''1938Q4'';');
 %$ fprintf(fid,'NAMES__ = {''azert'';''yuiop''};');
 %$ fprintf(fid,'TEX__ = {''azert'';''yuiop''};');
+%$ fprintf(fid,'OPS__ = {''method1(azert)'';''method2(yuiop)''};');
+%$ fprintf(fid,'TAGS__ = struct();');
+%$ fprintf(fid,'TAGS__.type = cell(2, 1);');
+%$ fprintf(fid,'TAGS__.type(1) = {''Haut''};');
+%$ fprintf(fid,'TAGS__.type(2) = {''Bas''};');
 %$ fprintf(fid,'azert = [1; 2; 3; 4; 5];');
 %$ fprintf(fid,'yuiop = [2; 3; 4; 5; 6];');
 %$ fclose(fid);
 %$
 %$ % Try to read the data m-file
 %$ try
-%$     datafile = 'data_m_file';
-%$     [freq,init,data,varlist,tex] = load_m_file_data(datafile);
+%$     datafile = 'data_m_file.m';
+%$     [freq, init, data, varlist, tex, ops, tags] = load_m_file_data(datafile);
+%$     delete('data_m_file.m');
 %$     t(1) = 1;
 %$ catch exception
 %$     t(1) = 0;
@@ -147,12 +172,14 @@ end
 %$
 %$ % Check the results.
 %$ t(2) = dassert(freq,4);
-%$ t(3) = dassert(isa(init,'dates'),1);
+%$ t(3) = isdates(init);
 %$ t(4) = dassert(init.freq,4);
 %$ t(5) = dassert(init.time,[1938 4]);
 %$ t(6) = dassert(varlist,{'azert';'yuiop'});
 %$ t(7) = dassert(tex,{'azert';'yuiop'});
-%$ t(8) = dassert(data(:,1),[1;2;3;4;5]);
-%$ t(9) = dassert(data(:,2),[2;3;4;5;6]);
+%$ t(8) = dassert(ops,{'method1(azert)';'method2(yuiop)'});
+%$ t(9) = dassert(tags.type,{'Haut';'Bas'});
+%$ t(10) = dassert(data(:,1),[1;2;3;4;5]);
+%$ t(11) = dassert(data(:,2),[2;3;4;5;6]);
 %$ T = all(t);
 %@eof:1

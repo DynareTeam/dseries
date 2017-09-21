@@ -66,10 +66,14 @@ o.abs_;
 %$
 %$ if t(1)
 %$      t(2) = dassert(length(p.name), 2);
-%$      t(3) = dassert(p.name{1},'abs(Variable_1)');
-%$      t(4) = dassert(p.name{2},'abs(Variable_2)');
-%$      t(5) = dassert(o.name{1},'Variable_1');
-%$      t(6) = dassert(o.name{2},'Variable_2');
+%$      t(3) = dassert(p.ops{1},'abs(Variable_1)');
+%$      t(4) = dassert(p.ops{2},'abs(Variable_2)');
+%$      t(5) = dassert(p.name{1},'Variable_1');
+%$      t(6) = dassert(p.name{2},'Variable_2');
+%$      t(7) = dassert(o.name{1},'Variable_1');
+%$      t(8) = dassert(o.name{2},'Variable_2');
+%$      t(9) = isempty(o.ops{1});
+%$      t(10) = isempty(o.ops{2});
 %$ end
 %$
 %$ T = all(t);
@@ -96,13 +100,16 @@ o.abs_;
 %$    t(2) = dassert(ts2.vobs,2);
 %$    t(3) = dassert(ts2.nobs,10);
 %$    t(4) = dassert(ts2.data,abs(A),1e-15);
-%$    t(5) = dassert(ts2.name,{'abs(A1)';'abs(A2)'});
-%$    t(6) = dassert(ts2.tex,{'|A_1|';'|A_2|'});
-%$    t(7) = dassert(ts1.vobs, 2);
-%$    t(8) = dassert(ts1.nobs, 10);
-%$    t(9) = dassert(ts1.data, A, 1e-15);
-%$    t(10) = dassert(ts1.name, {'A1';'A2'});
-%$    t(11) = dassert(ts1.tex, {'A_1';'A_2'});
+%$    t(5) = dassert(ts2.name,{'A1';'A2'});
+%$    t(6) = dassert(ts2.ops,{'abs(A1)';'abs(A2)'});
+%$    t(7) = dassert(ts2.tex,{'A_1';'A_2'});
+%$    t(8) = dassert(ts1.vobs, 2);
+%$    t(9) = dassert(ts1.nobs, 10);
+%$    t(10) = dassert(ts1.data, A, 1e-15);
+%$    t(11) = dassert(ts1.name, {'A1';'A2'});
+%$    t(12) = dassert(ts1.tex, {'A_1';'A_2'});
+%$    t(13) = isempty(ts1.ops{1});
+%$    t(14) = isempty(ts1.ops{2});
 %$ end
 %$ T = all(t);
 %@eof:3
@@ -128,13 +135,16 @@ o.abs_;
 %$    t(2) = dassert(ts2.vobs,2);
 %$    t(3) = dassert(ts2.nobs,10);
 %$    t(4) = dassert(ts2.data,abs(A),1e-15);
-%$    t(5) = dassert(ts2.name,{'abs(A1)';'abs(A2)'});
-%$    t(6) = dassert(ts2.tex,{'|A_1|';'|A_2|'});
-%$    t(7) = dassert(ts1.vobs, 2);
-%$    t(8) = dassert(ts1.nobs, 10);
-%$    t(9) = dassert(ts1.data, A, 1e-15);
-%$    t(10) = dassert(ts1.name, {'A1';'A2'});
-%$    t(11) = dassert(ts1.tex, {'A_1';'A_2'});
+%$    t(5) = dassert(ts2.name,{'A1';'A2'});
+%$    t(6) = dassert(ts2.tex,{'A_1';'A_2'});
+%$    t(7) = dassert(ts2.ops,{'abs(A1)';'abs(A2)'});
+%$    t(8) = dassert(ts1.vobs, 2);
+%$    t(9) = dassert(ts1.nobs, 10);
+%$    t(10) = dassert(ts1.data, A, 1e-15);
+%$    t(11) = dassert(ts1.name, {'A1';'A2'});
+%$    t(12) = dassert(ts1.tex, {'A_1';'A_2'});
+%$    t(13) = isempty(ts1.ops{1});
+%$    t(14) = isempty(ts1.ops{2});
 %$ end
 %$ T = all(t);
 %@eof:4

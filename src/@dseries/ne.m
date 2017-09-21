@@ -69,6 +69,10 @@ if ~isequal(o.tex, p.tex)
     warning('dseries::ne: Both input arguments do not have the same tex names!')
 end
 
+if ~isequal(o.tags, p.tags)
+    warning('dseries::ne: Both input arguments do not have the same tags!')
+end
+
 b = ne(o.data, p.data);
 
 %@test:1

@@ -31,21 +31,21 @@ switch frequency(o)
   case 4
     o.data(2:end,:) = o.data(2:end,:)./o.data(1:end-1,:) - 1;
     o.data(1,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['qgrowth(' o.name{i} ')']};
-        o.tex(i) = {['\delta ' o.tex{i}]};
-    end
   case 12
     o.data(4:end,:) = o.data(4:end,:)./o.data(1:end-3,:) - 1;
     o.data(1:3,:) = NaN;
-    for i = 1:vobs(o)
-        o.name(i) = {['qgrowth(' o.name{i} ')']};
-        o.tex(i) = {['\delta_3 ' o.tex{i}]};
-    end
   case 52
     error('dseries::qgrowth: I do not know yet how to compute quaterly growth rates from weekly data!')
   otherwise
     error(['dseries::qgrowth: object ' inputname(1) ' has unknown frequency']);
+end
+
+for i = 1:vobs(o)
+    if isempty(o.ops{i})
+        o.ops(i) = {['qdiff(' o.name{i} ')']};
+    else
+        o.ops(i) = {['qdiff(' o.ops{i} ')']};
+    end
 end
 
 %@test:1

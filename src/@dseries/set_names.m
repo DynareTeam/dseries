@@ -1,4 +1,4 @@
-function o = set_names(o,varargin) % --*-- Unitary tests --*--
+function o = set_names(o, varargin) % --*-- Unitary tests --*--
 
 % Specifies names of the variables in a dseries object (in place modification).
 %
@@ -29,11 +29,19 @@ function o = set_names(o,varargin) % --*-- Unitary tests --*--
 n = nargin-1;
 
 if ~isdseries(o)
-    error(['dseries::set_names: ' inputname(1) ' must be a dseries object!'])
+    if isempty(inputname(1))
+        error(['dseries::set_names: First input must be a dseries object!'])
+    else
+        error(['dseries::set_names: ' inputname(1) ' must be a dseries object!'])
+    end
 end
 
 if ~isequal(vobs(o), n)
-    error(['dseries::set_names: The number of variables in ' inputname(1) ' does not match the number of declared names!'])
+    if isempty(inputname(1))
+        error(['dseries::set_names: The number of variables in first input does not match the number of declared names!'])
+    else
+        error(['dseries::set_names: The number of variables in ' inputname(1) ' does not match the number of declared names!'])
+    end
 end
 
 for i=1:vobs(o)

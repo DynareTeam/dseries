@@ -30,9 +30,30 @@ if isnumeric(o) && (isscalar(o) ||  isvector(o))
     if ~isdseries(p)
         error('dseries::mtimes: Second input argument must be a dseries object!')
     end
-    q = copy(p);
-    q.data = bsxfun(@times, p.data, o);
-    return;
+    q = dseries(zeros(size(p.data)), p.firstdate);
+    q.data = bsxfun(@times, o, p.data);
+    for i=1:vobs(q)
+        if isscalar(o)
+            if isempty(p.ops{i})
+                q.ops(i) = {sprintf('mtimes(%s, %s)', num2str(o), p.name{i})};
+            else
+                q.ops(i) = {sprintf('mtimes(%s, %s)', num2str(o), p.ops{i})};
+            end
+        elseif isrow(o)
+            if isempty(p.ops{i})
+                q.ops(i) = {sprintf('mtimes(%s, %s)', num2str(o(i)), p.name{i})};
+            else
+                q.ops(i) = {sprintf('mtimes(%s, %s)', num2str(o(i)), p.ops{i})};
+            end
+        else
+            if isempty(p.ops{i})
+                q.ops(i) = {sprintf('mtimes(%s, %s)', matrix2string(o), p.name{i})};
+            else
+                q.ops(i) = {sprintf('mtimes(%s, %s)', matrix2string(o), p.ops{i})};
+            end
+        end
+    end
+    return
 end
 
 if isnumeric(p) && (isscalar(p) || isvector(p))
@@ -41,6 +62,27 @@ if isnumeric(p) && (isscalar(p) || isvector(p))
     end
     q = copy(o);
     q.data = bsxfun(@times, o.data, p);
+    for i=1:vobs(q)
+        if isscalar(p)
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('mtimes(%s, %s)', q.name{i}, num2str(p))};
+            else
+                q.ops(i) = {sprintf('mtimes(%s, %s)', q.ops{i}, num2str(p))};
+            end
+        elseif isrow(p)
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('mtimes(%s, %s)', q.name{i}, num2str(p(i)))};
+            else
+                q.ops(i) = {sprintf('mtimes(%s, %s)', q.ops{i}, num2str(p(i)))};
+            end
+        else
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('mtimes(%s, %s)', q.name{i}, matrix2string(p))};
+            else
+                q.ops(i) = {sprintf('mtimes(%s, %s)', q.ops{i}, matrix2string(p))};
+            end
+        end
+    end
     return
 end
 
@@ -66,14 +108,25 @@ if isdseries(o) && isdseries(p)
     if ~isequal(nobs(o), nobs(p)) || ~isequal(firstdate(o),firstdate(p))
         [o, p] = align(o, p);
     end
-    q = dseries();
-    q.dates = o.dates;
-    q_vobs = max(vobs(o),vobs(p));
-    q.name = cell(q_vobs,1);
-    q.tex = cell(q_vobs,1);
-    for i=1:q_vobs
-        q.name(i) = {['multiply(' o.name{idB(i)} ';' p.name{idC(i)} ')']};
-        q.tex(i) = {['(' o.tex{idB(i)} '*' p.tex{idC(i)} ')']};
+    if vobs(o)>=vobs(p)
+        q = copy(o);
+    else
+        q = dseries(zeros(size(p.data)), p.firstdate);
+    end
+    for i=1:vobs(q)
+        if isempty(o.ops{idB(i)})
+            if isempty(p.ops{idC(i)})
+                q.ops(i) = {sprintf('mtimes(%s, %s)', o.name{idB(i)}, p.name{idC(i)})};
+            else
+                q.ops(i) = {sprintf('mtimes(%s, %s)', o.name{idB(i)}, p.ops{idC(i)})};
+            end
+        else
+            if isempty(p.ops{idC(i)})
+                q.ops(i) = {sprintf('mtimes(%s, %s)', o.ops{idB(i)}, p.name{idC(i)})};
+            else
+                q.ops(i) = {sprintf('mtimes(%s, %s)', o.ops{idB(i)}, p.ops{idC(i)})};
+            end
+        end
     end
     q.data = bsxfun(@times, o.data, p.data);
 else
@@ -102,7 +155,8 @@ end
 %$    t(2) = dassert(ts3.vobs,2);
 %$    t(3) = dassert(ts3.nobs,10);
 %$    t(4) = dassert(ts3.data,[A(:,1).*B, A(:,2).*B],1e-15);
-%$    t(5) = dassert(ts3.name,{'multiply(A1;B1)';'multiply(A2;B1)'});
+%$    t(5) = dassert(ts3.name,{'A1';'A2'});
+%$    t(6) = dassert(ts3.ops,{'mtimes(A1, B1)';'mtimes(A2, B1)'});
 %$ end
 %$ T = all(t);
 %@eof:1

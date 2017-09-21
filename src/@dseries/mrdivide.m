@@ -30,9 +30,18 @@ if isnumeric(o) && (isscalar(o) ||  isvector(o))
     if ~isdseries(p)
         error('dseries::mrdivide: Second input argument must be a dseries object!')
     end
-    q = copy(p);
+    q = dseries(zeros(size(p.data)), p.firstdate);
     q.data = bsxfun(@rdivide, o, p.data);
-    return;
+    for i=1:vobs(q)
+        if isscalar(o)
+            q.ops(i) = {sprintf('mrdivide(%s, %s)', num2str(o), p.name{i})};
+        elseif isrow(o)
+            q.ops(i) = {sprintf('mrdivide(%s, %s)', num2str(o(i)), p.name{i})};
+        else
+            q.ops(i) = {sprintf('mrdivide(%s, %s)', matrix2string(o), p.name{i})};
+        end
+    end
+    return
 end
 
 if isnumeric(p) && (isscalar(p) || isvector(p))
@@ -41,6 +50,27 @@ if isnumeric(p) && (isscalar(p) || isvector(p))
     end
     q = copy(o);
     q.data = bsxfun(@rdivide, o.data, p);
+    for i=1:vobs(q)
+        if isscalar(p)
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', q.name{i}, num2str(p))};
+            else
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', q.ops{i}, num2str(p))};
+            end
+        elseif isrow(p)
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', q.name{i}, num2str(p(i)))};
+            else
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', q.ops{i}, num2str(p(i)))};
+            end
+        else
+            if isempty(q.ops{i})
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', q.name{i}, matrix2string(p))};
+            else
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', q.ops{i}, matrix2string(p))};
+            end
+        end
+    end
     return
 end
 
@@ -66,14 +96,25 @@ if isdseries(o) && isdseries(p)
     if ~isequal(nobs(o), nobs(p)) || ~isequal(firstdate(o),firstdate(p))
         [o, p] = align(o, p);
     end
-    q = dseries();
-    q.dates = o.dates;
-    q_vobs = max(vobs(o),vobs(p));
-    q.name = cell(q_vobs,1);
-    q.tex = cell(q_vobs,1);
-    for i=1:q_vobs
-        q.name(i) = {['divide(' o.name{idB(i)} ';' p.name{idC(i)} ')']};
-        q.tex(i) = {['(' o.tex{idB(i)} '/' p.tex{idC(i)} ')']};
+    if vobs(o)>=vobs(p)
+        q = copy(o);
+    else
+        q = dseries(zeros(size(p.data)), p.firstdate);
+    end
+    for i=1:vobs(q)
+        if isempty(o.ops{idB(i)})
+            if isempty(p.ops{idC(i)})
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', o.name{idB(i)}, p.name{idC(i)})};
+            else
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', o.name{idB(i)}, p.ops{idC(i)})};
+            end
+        else
+            if isempty(p.ops{idC(i)})
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', o.ops{idB(i)}, p.name{idC(i)})};
+            else
+                q.ops(i) = {sprintf('mrdivide(%s, %s)', o.ops{idB(i)}, p.ops{idC(i)})};
+            end
+        end
     end
     q.data = bsxfun(@rdivide, o.data, p.data);
 else

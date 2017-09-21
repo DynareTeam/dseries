@@ -75,8 +75,28 @@ d_init_flag = 0;
 if ~isequal(firstdate(b),firstdate(c))
     d_init_flag = 1;
 end
+a.ops = vertcat(b.ops,c.ops);
 a.name = vertcat(b.name,c.name);
 a.tex  = vertcat(b.tex,c.tex);
+btagnames = fieldnames(b.tags);
+ctagnames = fieldnames(c.tags);
+atagnames = union(btagnames, ctagnames);
+if isempty(atagnames)
+    a.tags = struct();
+else
+    for i=1:length(atagnames)
+        if ismember(atagnames{i}, btagnames) && ismember(atagnames{i}, ctagnames)
+            a.tags.(atagnames{i}) = vertcat(b.tags.(atagnames{i}), b.tags.(atagnames{i}));
+        elseif ismember(atagnames{i}, btagnames)
+            a.tags.(atagnames{i}) = vertcat(b.tags.(atagnames{i}), cell(vobs(c), 1));
+        elseif ismember(atagnames{i}, ctagnames)
+            a.tags.(atagnames{i}) = vertcat(cell(vobs(b), 1), c.tags.(atagnames{i}));
+        else
+            error('dseries::horzcat: This is a bug!')
+        end
+    end
+end
+
 if ~( d_nobs_flag(1) || d_init_flag(1) )
     a.data = [b.data,c.data];
     a.dates = b.dates;
@@ -330,3 +350,48 @@ end
 %$
 %$ T = t;
 %@eof:7
+
+%@test:8
+%$ % Define a data set.
+%$ A = [transpose(1:10),2*transpose(1:10)];
+%$ B = [transpose(1:10),2*transpose(1:10)];
+%$
+%$ % Define names
+%$ A_name = {'A1';'A2'};
+%$ B_name = {'B1';'B2'};
+%$
+%$ % Define expected results.
+%$ e.init = dates(1,1);
+%$ e.freq = 1;
+%$ e.name = {'A1';'A2';'B1';'B2'};
+%$ e.data = [A,B];
+%$
+%$ % Instantiate two time series objects.
+%$ ts1 = dseries(A,[],A_name,[]);
+%$ ts2 = dseries(B,[],B_name,[]);
+%$ ts1.tag('t1');
+%$ ts1.tag('t1', 'A1', 'Stock');
+%$ ts1.tag('t1', 'A2', 'Flow');
+%$ ts2.tag('t2');
+%$ ts2.tag('t2', 'B1', 0);
+%$ ts2.tag('t2', 'B2', 1);
+%$
+%$ % Call the tested method.
+%$ try
+%$   ts3 = [ts1,ts2];
+%$   t(1) = true;
+%$ catch
+%$   t(1) = false;
+%$ end
+%$
+%$ % Check the results.
+%$ if t(1)
+%$   t(2) = dassert(ts3.init,e.init);
+%$   t(3) = dassert(ts3.freq,e.freq);
+%$   t(4) = dassert(ts3.data,e.data);
+%$   t(5) = dassert(ts3.name,e.name);
+%$   t(6) = dassert(ts3.tags.t1,{'Stock';'Flow';[];[]});
+%$   t(7) = dassert(ts3.tags.t2,{[];[];0;1});
+%$ end
+%$ T = all(t);
+%@eof:8

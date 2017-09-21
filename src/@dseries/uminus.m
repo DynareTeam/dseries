@@ -30,8 +30,11 @@ o = copy(o);
 o.data = -(o.data);
 
 for i = 1:vobs(o)
-    o.name(i) = {[ '-' o.name{i}]};
-    o.tex(i) = {[ '-' o.tex{i}]};
+    if isempty(o.ops{i})
+        o.ops(i) = {sprintf('uminus(%s)', o.name{i})};
+    else
+        o.ops(i) = {sprintf('uminus(%s)', o.ops{i})};
+    end
 end
 
 %@test:1
@@ -56,8 +59,9 @@ end
 %$    t(2) = dassert(ts2.vobs,2);
 %$    t(3) = dassert(ts2.nobs,10);
 %$    t(4) = dassert(ts2.data,-A,1e-15);
-%$    t(5) = dassert(ts2.name,{'-A1';'-A2'});
-%$    t(6) = dassert(ts2.tex,{'-A_1';'-A_2'});
+%$    t(5) = dassert(ts2.name,{'A1';'A2'});
+%$    t(6) = dassert(ts2.tex,{'A_1';'A_2'});
+%$    t(7) = dassert(ts2.ops,{'uminus(A1)';'uminus(A2)'});
 %$ end
 %$ T = all(t);
 %@eof:1

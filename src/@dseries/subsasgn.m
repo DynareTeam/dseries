@@ -95,7 +95,7 @@ switch length(S)
             % Overwrite the dates member
             A.dates = B;
             return
-        elseif ismember(S(1).subs,{'data','name','tex'})
+        elseif ismember(S(1).subs,{'data','name','tex','ops'})
             error(['dseries::subsasgn: You cannot overwrite ' S(1).subs ' member!'])
         elseif ~isequal(S(1).subs,B.name)
             % Single variable selection.

@@ -1,4 +1,4 @@
-function save(A,basename,format) % --*-- Unitary tests --*--
+function save(o, basename, format) % --*-- Unitary tests --*--
 
 % Saves a dseries object on disk.
 
@@ -20,7 +20,7 @@ function save(A,basename,format) % --*-- Unitary tests --*--
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
 if nargin<3 || isempty(format)
-    format = 'csv';
+    format = 'mat';
 end
 
 if nargin<2 || isempty(basename)
@@ -36,59 +36,94 @@ switch format
     fid = fopen([basename, '.m'],'w');
     fprintf(fid,'%% File created on %s.\n',datestr(now));
     fprintf(fid,'\n');
-    fprintf(fid,'FREQ__ = %s;\n',num2str(frequency(A)));
-    fprintf(fid,'INIT__ = ''%s'';\n',date2string(firstdate(A)));
+    fprintf(fid,'FREQ__ = %s;\n',num2str(frequency(o)));
+    fprintf(fid,'INIT__ = ''%s'';\n',date2string(firstdate(o)));
     fprintf(fid,'\n');
     fprintf(fid,'NAMES__ = {');
-    for i=1:vobs(A)
-        fprintf(fid,[ '''' A.name{i}  '''']);
-        if i<vobs(A)
+    for i = 1:vobs(o)
+        fprintf(fid,[ '''' o.name{i}  '''']);
+        if i<vobs(o)
             fprintf(fid,'; ');
         end
     end
     fprintf(fid,'};\n');
     str = 'TEX__ = {';
-    for i=1:vobs(A)-1
+    for i=1:vobs(o)-1
         str = [str, '''%s''; '];
     end
     str = [str, '''%s''};'];
-    str = sprintf(str, A.tex{:});
+    str = sprintf(str, o.tex{:});
     pattern = '(\w*)(\\\_)';
     str = regexprep(str, pattern, '$1\\\\_');
     fprintf(fid,str);
-    fprintf(fid,'\n\n');
-    for v=1:vobs(A)
-        fprintf(fid,'%s = [\n', A.name{v});
-        fprintf(fid,'%15.8g\n',A.data(1:end-1,v));
-        fprintf(fid,'%15.8g];\n\n',A.data(end,v));
+    fprintf(fid,'\n');
+    fprintf(fid,'OPS__ = {');
+    for i = 1:vobs(o)
+        if isempty(o.ops{i})
+            fprintf(fid,[ '[]']);
+        else
+            fprintf(fid,[ '''' o.ops{i}  '''']);
+        end
+        if i<vobs(o)
+            fprintf(fid,';');
+        end
+    end
+    fprintf(fid,'};\n\n');
+    if ~isempty(fieldnames(o.tags))
+        % User has defined tags on the variables.
+        tagnames = fieldnames(o.tags);
+        TAGS__ = fprintf(fid, 'struct();\n');
+        for i=1:length(tagnames)
+            fprintf(fid, 'TAGS__.%s = cell(%s, 1);\n', tagnames{i}, num2str(vobs(o)));
+            for j=1:vobs(o)
+                if ~isempty(o.tags.(tagnames{i}){j})
+                    if ischar(o.tags.(tagnames{i}){j})
+                        fprintf(fid, 'TAGS__.%s(%s) = {''%s''};\n', tagnames{i}, num2str(j), o.tags.(tagnames{i}){j});
+                    elseif isnumeric(o.tags.(tagnames{i}){j}) && iscalar(o.tags.(tagnames{i}){j})
+                        fprintf(fid, 'TAGS__.%s(%s) = {%s};\n', tagnames{i}, num2str(j), o.tags.(tagnames{i}){j});
+                    else
+                        error('dseries::tags: Cannot save this type of tag!')
+                    end
+                end
+            end
+            fprintf(fid, '\n');
+        end
+        fprintf(fid,'\n\n');
+    end
+    for v = 1:vobs(o)
+        fprintf(fid,'%s = [\n', o.name{v});
+        fprintf(fid,'%15.8g\n', o.data(1:end-1,v));
+        fprintf(fid,'%15.8g];\n\n', o.data(end,v));
     end
     fclose(fid);
   case 'mat'
-    FREQ__ = frequency(A);
-    INIT__ = date2string(firstdate(A));
-    NAMES__ = A.name;
-    TEX__ = A.tex;
+    FREQ__ = frequency(o);
+    INIT__ = date2string(firstdate(o));
+    NAMES__ = o.name;
+    TEX__ = o.tex;
+    OPS__ = o.ops;
+    TAGS__ = o.tags;
     str = [];
-    for v=1:vobs(A)
-        str = sprintf('%s %s = A.data(:,%s);', str, A.name{v}, num2str(v));
+    for v = 1:vobs(o)
+        str = sprintf('%s %s = o.data(:,%s);', str, o.name{v}, num2str(v));
     end
     eval(str);
     currentdirectorycontent = dir();
-    if ismember([basename, '.mat'],{currentdirectorycontent.name})
-        copyfile([basename, '.mat'],[basename, '.old.mat']);
+    if ismember([basename, '.mat'], {currentdirectorycontent.name})
+        copyfile([basename, '.mat'], [basename, '.old.mat']);
     end
-    save([basename '.mat'],'INIT__','FREQ__','NAMES__','TEX__',A.name{:});
+    save([basename '.mat'], 'INIT__', 'FREQ__', 'NAMES__', 'TEX__', 'OPS__', 'TAGS__', o.name{:});
   case 'csv'
     currentdirectorycontent = dir();
     if ismember([basename, '.csv'],{currentdirectorycontent.name})
         copyfile([basename, '.csv'],[basename, '.old.csv']);
     end
     fid = fopen([basename, '.csv'],'w');
-    fprintf(fid,',%s', A.name{:});
+    fprintf(fid,',%s', o.name{:});
     fprintf(fid,'\n');
-    for t=1:nobs(A)
-        str = sprintf(', %15.8g',A.data(t,:));
-        fprintf(fid, '%s%s\n',date2string(A.dates(t)),str);
+    for t = 1:nobs(o)
+        str = sprintf(', %15.8g',o.data(t,:));
+        fprintf(fid, '%s%s\n',date2string(o.dates(t)), str);
     end
     fclose(fid);
 end
@@ -172,7 +207,7 @@ end
 %$    t = 0;
 %$ end
 %$
-%$ delete('dynare_series.csv');
+%$ delete('dynare_series.mat');
 %$
 %$ T = all(t);
 %@eof:4

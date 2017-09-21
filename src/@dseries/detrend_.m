@@ -52,6 +52,14 @@ else
     error('dseries::detrend: Second argument must be a positive integer scalar!')
 end
 
+for i=1:vobs(o)
+    if isempty(o.ops{i})
+        o.ops(i) = {sprintf('detrend(%s, %s)', o.name{i}, num2str(model))};
+    else
+        o.ops(i) = {sprintf('detrend(%s, %s)', o.ops{i}, num2str(model))};
+    end
+end
+
 %@test:1
 %$ % Define a dataset.
 %$ a = dseries(randn(1000,3));
