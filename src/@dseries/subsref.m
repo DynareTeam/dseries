@@ -70,11 +70,6 @@ switch S(1).type
             error(['dseries::subsref: ' S(1).subs ' is not a method but a member!'])
         end
         B = builtin('subsref', A, S(1));
-      case {'log','log_','exp','exp_','ygrowth','ygrowth_','qgrowth','qgrowth_','ydiff','ydiff_','qdiff','qdiff_','abs','abs_','isnan','firstdate','firstobservedperiod','lastobservedperiod','lineartrend'}  % Give "dot access" to public methods without args.
-        B = feval(S(1).subs,A);
-        if length(S)>1 && isequal(S(2).type,'()') && isempty(S(2).subs)
-            S = shiftS(S,1);
-        end
       case 'nobs'
         % Returns the number of observations.
         B = rows(A.data);
@@ -90,49 +85,8 @@ switch S(1).type
       case 'freq'
         % Returns an integer characterizing the data frequency (1, 4, 12 or 52)
         B = A.dates.freq;
-      case {'lag','lag_','lead','lead_','hptrend','hptrend_','hpcycle','hpcycle_','chain','chain_','detrend','detrend_','exist','mean','std','center','center_'} % Methods with less than two arguments.
-        if length(S)>1 && isequal(S(2).type,'()')
-            if isempty(S(2).subs)
-                B = feval(S(1).subs,A);
-                S = shiftS(S,1);
-            else
-                if ~ischar(S(2).subs{1}) && length(S(2).subs{1})>1
-                    error(['dseries::subsref: ' S(1).subs{1} ' method admits no more than one argument!'])
-                end
-                B = feval(S(1).subs,A,S(2).subs{1});
-                S = shiftS(S,1);
-            end
-        else
-            B = feval(S(1).subs,A);
-        end
-      case {'cumsum','cumsum_','insert','pop','pop_','cumprod','cumprod_','remove','remove_','onesidedhptrend','onesidedhptrend_','onesidedhpcycle','onesidedhpcycle_'} % Methods with less than three argument.
-        if length(S)>1 && isequal(S(2).type,'()')
-            if isempty(S(2).subs)
-                B = feval(S(1).subs,A);
-                S = shiftS(S,1);
-            else
-                if length(S(2).subs)>2
-                    error(['dseries::subsref: ' S(1).subs{1} ' method admits no more than two arguments!'])
-                end
-                B = feval(S(1).subs,A,S(2).subs{:});
-                S = shiftS(S,1);
-            end
-        else
-            B = feval(S(1).subs,A);
-        end
-      case {'baxter_king_filter', 'baxter_king_filter_'}
-        if length(S)>1 && isequal(S(2).type,'()')
-            if isempty(S(2).subs)
-                B = feval(S(1).subs,A);
-                S = shiftS(S,1);
-            else
-                B = feval(S(1).subs,A,S(2).subs{1})
-                S = shiftS(S,1);
-            end
-        else
-            B = feval(S(1).subs,A);
-        end
-      case 'save'                                                        % Save dseries object on disk (default is a csv file).
+      case 'save'                                                        
+        % Save dseries object on disk (default is a mat file).
         B = NaN;
         if isequal(length(S),2)
             if strcmp(S(2).type,'()')
@@ -153,6 +107,47 @@ switch S(1).type
             save(A);
         else
             error('dseries::subsref: Call to save method must come in last position!')
+        end
+      case {'baxter_king_filter', 'baxter_king_filter_', ...
+            'cumsum','cumsum_', ...
+            'insert', ...
+            'pop','pop_', ...
+            'cumprod','cumprod_', ...
+            'remove','remove_', ...
+            'onesidedhptrend','onesidedhptrend_', ...
+            'onesidedhpcycle','onesidedhpcycle_', ...
+            'lag','lag_', ...
+            'lead','lead_', ...
+            'hptrend','hptrend_', ...
+            'hpcycle','hpcycle_', ...
+            'chain','chain_', ...
+            'detrend','detrend_', ...
+            'exist', ...
+            'mean', ...
+            'std', ...
+            'center','center_', ...
+            'log','log_', ...
+            'exp','exp_', ...
+            'ygrowth','ygrowth_', ...
+            'qgrowth','qgrowth_', ...
+            'ydiff','ydiff_', ...
+            'qdiff','qdiff_', ...
+            'abs','abs_', ...
+            'isnan', ...
+            'firstdate', ...
+            'firstobservedperiod', ...
+            'lastobservedperiod', ...
+            'lineartrend'}
+        if length(S)>1 && isequal(S(2).type,'()')
+            if isempty(S(2).subs)
+                B = feval(S(1).subs,A);
+                S = shiftS(S,1);
+            else
+                B = feval(S(1).subs,A,S(2).subs{:});
+                S = shiftS(S,1);
+            end
+        else
+            B = feval(S(1).subs,A);
         end
       case 'size'
         if isequal(length(S),2) && strcmp(S(2).type,'()')
