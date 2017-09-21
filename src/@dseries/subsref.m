@@ -225,6 +225,8 @@ switch S(1).type
         B.name = A.name;
         B.tex  = A.tex;
         B.dates = A.dates(tdx);
+        B.ops = A.ops;
+        B.tags = A.tags;
     elseif isvector(S(1).subs{1}) && all(isint(S(1).subs{1}))
         error('dseries::subsref: It is not possible to select observations with a vector of integers. You have to index with a dates object instead!');
     else
@@ -243,6 +245,11 @@ switch S(1).type
         B.name = A.name(idx);
         B.tex  = A.tex(idx);
         B.dates = A.dates;
+        B.ops = A.ops(idx);
+        tagnames = fieldnames(A.tags);
+        for i=1:length(tagnames)
+            B.tags.(tagnames{i}) = A.tags.(tagnames{i})(idx);
+        end
     else
         error('dseries::subsref: What the Hell are you tryin'' to do?!')
     end
