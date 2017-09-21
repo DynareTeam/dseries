@@ -179,6 +179,10 @@ switch S(1).type
             B.tex = A.tex(ndx);
             B.dates = A.dates;
             B.ops = A.ops(ndx);
+            tagnames = fieldnames(A.tags);
+            for i=1:length(tagnames)
+                B.tags.(tagnames{i}) = A.tags.(tagnames{i})(ndx);
+            end
         else
             error('dseries::subsref: Unknown public method, public member or variable!')
         end
