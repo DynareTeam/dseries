@@ -46,8 +46,8 @@ if nargin<2
 end
 
 % Check second input argument
-if p<=0
-    error('dseries:WrongInputArguments','Second input argument must be strictly positive! Use lag method instead.')
+if p<0
+    error('dseries:WrongInputArguments','Second input argument must be non negative! Use lag method instead.')
 end
 
 if ~isint(p)
