@@ -65,10 +65,17 @@ if ~all(cellfun(@isempty, struct2cell(o.forecast)))
         for i=1:length(savedoutput)
             if exist(sprintf('%s.%s', basename, lower(savedoutput{i})))
                 tmp  = importdata(sprintf('%s.%s', basename, lower(savedoutput{i})));
+                initdate = num2str(tmp.data(1,1)); % wrong in series
+                t = o.y.dates;
                 name = strsplit(tmp.textdata{1},'\t');
                 name = name(2:end);
                 data = tmp.data(:,2:end);
-                o.results.(savedoutput{i}) = dseries(data, lastobservedperiod(o.y)+1, name);
+                if isempty(data)
+                    disp(['x13:forecast:: Problem reading ' sprintf('%s.%s', basename, lower(savedoutput{i})) '. Output formatting may be incorrect!']);
+                    o.results.(savedoutput{i}) = [];
+                else
+                    o.results.(savedoutput{i}) = dseries(data, dates(t.freq,str2num(initdate(1:4)),str2num(initdate(5:end))),name);
+                end
             end
         end
     end
