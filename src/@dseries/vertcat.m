@@ -37,9 +37,9 @@ function o = vertcat(varargin) % --*-- Unitary tests --*--
 if nargin==0
     o = dseries();
 elseif nargin == 1
-    o = varargin{1};
+    o = copy(varargin{1});
 elseif nargin>1
-    o = varargin{1};
+    o = copy(varargin{1});
     for i=2:nargin
         o = vertcat_(o, varargin{i});
     end
@@ -108,7 +108,6 @@ d.dates = [b.dates; c.dates];
 %$ T = all(t);
 %@eof:1
 
-
 %@test:2
 %$ % Define a data set.
 %$ A = [transpose(1:10),2*transpose(1:10)];
@@ -168,3 +167,23 @@ d.dates = [b.dates; c.dates];
 %$ end
 %$ T = all(t);
 %@eof:3
+
+%@test:4
+%$ A = dseries(ones(3, 1), '1990Q1');
+%$ B = dseries(2*ones(3, 1), '1990Q4Q3');
+%$
+%$ try
+%$    C = [A; B];
+%$    t(1) = true;
+%$ catch
+%$    t(1) = false;
+%$ end
+%$
+%$ % Check the results.
+%$ if t(1)
+%$    t(2) = dassert(C.data, [ones(3,1); 2*ones(3,1)]);
+%$    t(3) = dassert(A.data, ones(3,1));
+%$    t(4) = dassert(B.data, 2*ones(3,1));
+%$ end
+%$ T = all(t);
+%@eof:4
