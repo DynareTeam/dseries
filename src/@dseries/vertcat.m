@@ -170,7 +170,7 @@ d.dates = [b.dates; c.dates];
 
 %@test:4
 %$ A = dseries(ones(3, 1), '1990Q1');
-%$ B = dseries(2*ones(3, 1), '1990Q4Q3');
+%$ B = dseries(2*ones(3, 1), '1990Q4');
 %$
 %$ try
 %$    C = [A; B];
