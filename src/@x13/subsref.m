@@ -53,7 +53,7 @@ switch S(1).type
                             o.(S(1).subs) = setoption(o.(S(1).subs), S(2).subs{i}, S(2).subs{i+1});
                             checkoptioncompatibility(o);
                         else
-                            disp(sprintf('Option %s is not available in block %s!', S(2).subs{i}, S(1).subs))
+                            error(sprintf('x13: Option %s is not available in block %s!', S(2).subs{i}, S(1).subs))
                         end
                     end
                 end
