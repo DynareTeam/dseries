@@ -42,9 +42,9 @@ end
 
 for i = 1:vobs(o)
     if isempty(o.ops{i})
-        o.ops(i) = {['qdiff(' o.name{i} ')']};
+        o.ops(i) = {['qgrowth(' o.name{i} ')']};
     else
-        o.ops(i) = {['qdiff(' o.ops{i} ')']};
+        o.ops(i) = {['qgrowth(' o.ops{i} ')']};
     end
 end
 
