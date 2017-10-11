@@ -56,7 +56,7 @@ switch length(S)
                 S(1).subs = replace_object_in_a_one_dimensional_cell_array(S(1).subs, elements(:), i);
             end
             if ~isempty(idBracket.open)
-                elements = build_list_of_variables_with_regexp(A.name, idBracket, element, {});
+                elements = build_list_of_variables_with_regexp(A.name, element(2:end-1), false);
                 S(1).subs = replace_object_in_a_one_dimensional_cell_array(S(1).subs, elements(:), i);
             end
         end
