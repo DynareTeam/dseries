@@ -61,7 +61,9 @@ switch ndseries
     if isequal(id(1),0)
         dates = strings([o.dates(1)-1,o.dates(id(2:end))]);
     else
-        dates = strings(o.dates(id));
+        ID = id(find(isint(id)));
+        set(gca,'XTick',ID);
+        dates = strings(o.dates(ID));
     end
     set(gca,'XTickLabel',dates);
   case 2
