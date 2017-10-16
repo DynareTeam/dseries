@@ -1,4 +1,4 @@
-function printstart(fid, period)
+function printstart(fid, period) % --*-- Unitary tests --*--
 
 % Copyright (C) 2017 Dynare Team
 %
@@ -30,3 +30,16 @@ switch period.freq
   otherwise
     error('x13:regression: This is a bug! Please contact the authors.')
 end
+
+%@test:1
+%$ try
+%$     per = dates(52,1996,1);
+%$     fid = fopen('test.spc', 'w');
+%$     printstart(fid,per);
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$ 
+%$ T = all(t);
+%@eof:1
