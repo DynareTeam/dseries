@@ -1,4 +1,4 @@
-function printoption(fid, optname, optvalue)
+function printoption(fid, optname, optvalue) % --*-- Unitary tests --*--
 
 % Copyright (C) 2017 Dynare Team
 %
@@ -42,3 +42,20 @@ elseif isreal(optvalue)
         end
     end
 end
+
+%@test:1
+%$ fid = fopen('test.spc', 'w');
+%$ 
+%$ try
+%$     series = dseries(rand(100,1),'1999M1');
+%$     o = x13(series);
+%$     o.x11('save','(d11)');
+%$     optnames = fieldnames(o.x11);
+%$     printoption(fid,'mode',o.x11.mode);
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$ 
+%$ T = all(t);
+%@eof:1
