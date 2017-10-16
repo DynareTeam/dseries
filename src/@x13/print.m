@@ -1,4 +1,4 @@
-function basename = print(o, basename)
+function basename = print(o, basename) % --*-- Unitary tests --*--
 
 % Prints spc file.
 
@@ -352,7 +352,7 @@ if ismember('x11regression', o.commands)
                     for i=1:length(conditionningvariables)
                         if ~ismember(conditionningvariables{i}, o.x.name)
                             fclose(fid);
-                            error('x13:x11regression: Variable %s is unkonwn', conditionningvariables{i})
+                            error('x13:x11regression: Variable %s is unknown', conditionningvariables{i})
                         end
                     end
                     % Select the data.
@@ -391,3 +391,34 @@ if ismember('x11regression', o.commands)
 end
 
 fclose(fid);
+
+%@test:1
+%$ try
+%$     series = dseries(rand(100,1),'1999M1');
+%$     o = x13(series);
+%$     o.x11('save','(d11)');
+%$     o.automdl('savelog','amd','mixed','no');
+%$     o.outlier('types','all','save','(fts)');
+%$     o.check('maxlag',24,'save','(acf pcf)');
+%$     o.estimate('save','(mdl est)');
+%$     o.forecast('maxlead',18,'probability',0.95,'save','(fct fvr)');
+%$     o.run(); % necessary to invoke alphanumeric "basename"
+%$     o.print();
+%$     
+%$     text = fileread(sprintf('%$s.spc',o.results.name));
+%$     comm = o.commands;
+%$     
+%$     for i = 1:numel(comm)
+%$         ex(i,1) = ~isempty(strfind(text,[comm{i} ' {']));
+%$     end
+%$     
+%$     if all(ex)
+%$         t(1) = true;
+%$         o.clean();
+%$     end
+%$ catch
+%$     t(1) = false;
+%$ end
+%$ 
+%$ T = all(t);
+%@eof:1
