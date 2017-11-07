@@ -50,15 +50,9 @@ end
 %$     data = (1+.01).^transpose(0:1:50);
 %$     ts = dseries(data,'1950Q1');
 %$     ts.mgrowth_;
-%$     t(1) = 1;
-%$ catch
 %$     t(1) = 0;
-%$ end
-%$
-%$ if t(1)
-%$     DATA = NaN(1,ts.vobs);
-%$     DATA = [DATA; .01*ones(ts.nobs-1,ts.vobs)];
-%$     t(2) = dassert(ts.data,DATA,1e-15);
+%$ catch
+%$     t(1) = 1;
 %$ end
 %$
 %$ T = all(t);
@@ -67,7 +61,7 @@ end
 %@test:2
 %$ try
 %$     data = (1+.01).^transpose(0:1:80);
-%$     ts = dseries(data,'1950M1');
+%$     ts = dseries(data, '1950M1');
 %$     ts.mgrowth_;
 %$     t(1) = 1;
 %$ catch
@@ -75,9 +69,9 @@ end
 %$ end
 %$
 %$ if t(1)
-%$     DATA = NaN(3,ts.vobs);
-%$     DATA = [DATA; (1.01^3-1)*ones(ts.nobs-3,ts.vobs)];
-%$     t(2) = dassert(ts.data,DATA,1e-15);
+%$     DATA = NaN(1,ts.vobs);
+%$     DATA = [DATA; (1.01-1)*ones(ts.nobs-1, ts.vobs)];
+%$     t(2) = dassert(ts.data, DATA, 1e-15);
 %$ end
 %$
 %$ T = all(t);
