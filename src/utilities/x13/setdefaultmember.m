@@ -1,4 +1,4 @@
-function s = setdefaultmember(name)
+function s = setdefaultmember(name) % --*-- Unitary tests --*--
 
 % Sets members of X13 object to default values (empty).
 
@@ -82,3 +82,14 @@ switch name
   otherwise
     error('x13:setdefaultmember: Unknown member!')
 end
+
+%@test:1
+%$ try
+%$     setdefaultmember('PyotrIlychTchaikowsky');
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$ 
+%$ T = all(t);
+%@eof:1

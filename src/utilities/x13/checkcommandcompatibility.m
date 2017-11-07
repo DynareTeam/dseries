@@ -1,4 +1,4 @@
-function checkcommandcompatibility(o, comm)
+function checkcommandcompatibility(o, comm) % --*-- Unitary tests --*--
 
 % Checks for compatibility of X13 commands.
 
@@ -38,3 +38,27 @@ switch comm
     end                          
   otherwise
 end
+
+%@test:1
+%$ t = zeros(2,1);
+%$ 
+%$ series = dseries(rand(100,1),'1999M1');
+%$ o = x13(series);
+%$ o.arima('save','(d11)');
+%$ 
+%$ try
+%$     o.automdl('savelog','amd');
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$ 
+%$ try
+%$     o.pickmdl('savelog','amd');
+%$     t(2) = false;
+%$ catch
+%$     t(2) = true;
+%$ end
+%$ 
+%$ T = all(t);
+%@eof:1
