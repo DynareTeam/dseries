@@ -27,16 +27,14 @@ function o = mdiff_(o) % --*-- Unitary tests --*--
 
 switch frequency(o)
   case 1
-    error('dseries::qdiff: I cannot compute monthly differences from yearly data!')
+    error('dseries::mdiff: I cannot compute monthly differences from yearly data!')
   case 4
-    error('dseries::qdiff: I cannot compute monthly differences from quarterly data!')
+    error('dseries::mdiff: I cannot compute monthly differences from quarterly data!')
   case 12
     o.data(2:end,:) = o.data(2:end,:)-o.data(1:end-1,:);
     o.data(1,:) = NaN;
-  case 52
-    error('dseries::qdiff: I do not know yet how to compute quaterly differences from monthly data!')
   otherwise
-    error(['dseries::qdiff: object ' inputname(1) ' has unknown frequency']);
+    error(['dseries::mdiff: object ' inputname(1) ' has unknown frequency']);
 end
 
 for i = 1:vobs(o)

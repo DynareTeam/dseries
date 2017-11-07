@@ -27,24 +27,21 @@ function o = mgrowth_(o) % --*-- Unitary tests --*--
 
 switch frequency(o)
   case 1
-    error('dseries::qgrowth: I cannot compute monthly growth rates from yearly data!')
+    error('dseries::mgrowth: I cannot compute monthly growth rates from yearly data!')
   case 4
-
+    error('dseries::mgrowth: I cannot compute monthly growth rates from quaterly data!')
   case 12
     o.data(2:end,:) = o.data(2:end,:)./o.data(1:end-1,:) - 1;
     o.data(1,:) = NaN;
-
-  case 52
-    error('dseries::qgrowth: I do not know yet how to compute monthly growth rates from weekly data!')
   otherwise
-    error(['dseries::qgrowth: object ' inputname(1) ' has unknown frequency']);
+    error(['dseries::mgrowth: object ' inputname(1) ' has unknown frequency']);
 end
 
 for i = 1:vobs(o)
     if isempty(o.ops{i})
-        o.ops(i) = {['mdiff(' o.name{i} ')']};
+        o.ops(i) = {['mgrowth(' o.name{i} ')']};
     else
-        o.ops(i) = {['mdiff(' o.ops{i} ')']};
+        o.ops(i) = {['mgrowth(' o.ops{i} ')']};
     end
 end
 
