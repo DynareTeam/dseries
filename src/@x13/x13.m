@@ -121,7 +121,7 @@ end
 end
 
 %@test:1
-%$ 
+%$
 %$ try
 %$     series = dseries(rand(100,2),'1999M1');
 %$     o = x13(series);
@@ -129,7 +129,7 @@ end
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:1
 
@@ -141,7 +141,7 @@ end
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:2
 
@@ -154,6 +154,6 @@ end
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:3

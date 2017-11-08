@@ -404,14 +404,14 @@ fclose(fid);
 %$     o.forecast('maxlead',18,'probability',0.95,'save','(fct fvr)');
 %$     o.run(); % necessary to invoke alphanumeric "basename"
 %$     o.print();
-%$     
+%$
 %$     text = fileread(sprintf('%$s.spc',o.results.name));
 %$     comm = o.commands;
-%$     
+%$
 %$     for i = 1:numel(comm)
 %$         ex(i,1) = ~isempty(strfind(text,[comm{i} ' {']));
 %$     end
-%$     
+%$
 %$     if all(ex)
 %$         t(1) = true;
 %$         o.clean();
@@ -419,6 +419,6 @@ fclose(fid);
 %$ catch
 %$     t(1) = false;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:1

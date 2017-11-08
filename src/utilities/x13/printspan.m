@@ -49,7 +49,7 @@ end
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:1
 
@@ -63,7 +63,7 @@ end
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:2
 
@@ -77,6 +77,6 @@ end
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:3

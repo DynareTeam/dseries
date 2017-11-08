@@ -33,6 +33,6 @@ end
 %$ catch
 %$     t(1) = false;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:1

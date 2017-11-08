@@ -40,6 +40,6 @@ end
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:1

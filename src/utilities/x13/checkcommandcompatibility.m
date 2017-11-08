@@ -20,7 +20,7 @@ function checkcommandcompatibility(o, comm) % --*-- Unitary tests --*--
 switch comm
   case 'arima'
     if ismember('automdl', o.commands)
-        error('x13:arima: ARIMA command is not compatible with AUTOMDL command!')               
+        error('x13:arima: ARIMA command is not compatible with AUTOMDL command!')
     elseif ismember('pickmdl', o.commands)
         error('x13:arima: ARIMA command is not compatible with PICKMDL command!')
     end
@@ -34,31 +34,31 @@ switch comm
     if ismember('arima', o.commands)
         error('x13:pickmdl: PICKMDL command is not compatible with ARIMA command!')
     elseif ismember('automdl', o.commands)
-        error('x13:pickmdl: PICKMDL command is not compatible with AUTOMDL command!')              
-    end                          
+        error('x13:pickmdl: PICKMDL command is not compatible with AUTOMDL command!')
+    end
   otherwise
 end
 
 %@test:1
 %$ t = zeros(2,1);
-%$ 
+%$
 %$ series = dseries(rand(100,1),'1999M1');
 %$ o = x13(series);
 %$ o.arima('save','(d11)');
-%$ 
+%$
 %$ try
 %$     o.automdl('savelog','amd');
 %$     t(1) = false;
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ try
 %$     o.pickmdl('savelog','amd');
 %$     t(2) = false;
 %$ catch
 %$     t(2) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:1

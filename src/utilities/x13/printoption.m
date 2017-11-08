@@ -45,7 +45,7 @@ end
 
 %@test:1
 %$ fid = fopen('test.spc', 'w');
-%$ 
+%$
 %$ try
 %$     series = dseries(rand(100,1),'1999M1');
 %$     o = x13(series);
@@ -56,6 +56,6 @@ end
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:1

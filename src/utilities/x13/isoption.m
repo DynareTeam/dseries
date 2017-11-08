@@ -86,13 +86,13 @@ end
 %$ catch
 %$     t(1) = true;
 %$ end
-%$ 
+%$
 %$ T = all(t);
 %@eof:1
 
 %@test:2
 %$ b = isoption('arima','ar');
 %$ c = ~isoption('arima','unicorn');
-%$ 
+%$
 %$ T = all([b;c]);
 %@eof:2
