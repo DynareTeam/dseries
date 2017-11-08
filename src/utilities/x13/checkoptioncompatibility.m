@@ -1,4 +1,4 @@
-function checkoptioncompatibility(o)
+function checkoptioncompatibility(o) % --*-- Unitary tests --*--
 
 % Checks for compatibility of options in different X13 commands.
 
@@ -34,5 +34,36 @@ if ~isempty(o.estimate.file)
         error('Command AUTOMDL not compatible with ESTIMATE.file option!');
     elseif ismember('pickmdl',o.commands)
         error('Command PICKMDL not compatible with ESTIMATE.file option!');
-    end    
+    end
 end
+
+%@test:1
+%$ t = zeros(3,1);
+%$
+%$ series = dseries(rand(100,1),'1999M1');
+%$ o = x13(series);
+%$ o.estimate('file','test');
+%$
+%$ try
+%$     o.arima('model','(1 0 1)');
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$
+%$ try
+%$     o.pickmdl('savelog','amd');
+%$     t(2) = false;
+%$ catch
+%$     t(2) = true;
+%$ end
+%$
+%$ try
+%$     o.regression('b',0.9);
+%$     t(3) = false;
+%$ catch
+%$     t(3) = true;
+%$ end
+%$
+%$ T = all(t);
+%@eof:1

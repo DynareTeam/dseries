@@ -1,4 +1,4 @@
-classdef x13<handle
+classdef x13<handle % --*-- Unitary tests --*--
 
 % Class for X13 toolbox.
 
@@ -119,3 +119,41 @@ methods
 end
 
 end
+
+%@test:1
+%$
+%$ try
+%$     series = dseries(rand(100,2),'1999M1');
+%$     o = x13(series);
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$
+%$ T = all(t);
+%@eof:1
+
+%@test:2
+%$ try
+%$     series = rand(100,2);
+%$     o = x13(series);
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$
+%$ T = all(t);
+%@eof:2
+
+%@test:3
+%$ try
+%$     y = dseries(rand(100,1),'1999M1');
+%$     x = rand(100,2);
+%$     o = x13(y,x);
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$
+%$ T = all(t);
+%@eof:3

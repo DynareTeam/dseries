@@ -1,4 +1,4 @@
-function clean(o)
+function clean(o) % --*-- Unitary tests --*--
 
 % Erase generated files if any.
 
@@ -21,3 +21,18 @@ if ~isempty(o.results)
     basename = o.results.name;
     delete(sprintf('%s.*', basename))
 end
+
+%@test:1
+%$ try
+%$     series = dseries(rand(100,1),'1999M1');
+%$     o = x13(series);
+%$     o.x11('save','(d11)');
+%$     o.run();
+%$     o.clean();
+%$     t(1) = true;
+%$ catch
+%$     t(1) = false;
+%$ end
+%$
+%$ T = all(t);
+%@eof:1

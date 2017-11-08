@@ -1,4 +1,4 @@
-function printspan(fid, period1, period2)
+function printspan(fid, period1, period2) % --*-- Unitary tests --*--
 
 % Copyright (C) 2017 Dynare Team
 %
@@ -38,3 +38,45 @@ switch period1.freq
   otherwise
     error('x13:regression: This is a bug! Please contact the authors.')
 end
+
+%@test:1
+%$ try
+%$     per1 = dates(52,1996,1);
+%$     per2 = dates(52,1996,2);
+%$     fid = fopen('test.spc', 'w');
+%$     printstart(fid,per1,per2);
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$
+%$ T = all(t);
+%@eof:1
+
+%@test:2
+%$ try
+%$     per1 = dates(52,1996,1);
+%$     per2 = dates(52,1994,2);
+%$     fid = fopen('test.spc', 'w');
+%$     printstart(fid,per1,per2);
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$
+%$ T = all(t);
+%@eof:2
+
+%@test:3
+%$ try
+%$     per1 = dates(4,1996,1);
+%$     per2 = dates(52,1996,2);
+%$     fid = fopen('test.spc', 'w');
+%$     printstart(fid,per1,per2);
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$
+%$ T = all(t);
+%@eof:3

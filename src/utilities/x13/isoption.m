@@ -1,4 +1,4 @@
-function b = isoption(command, option)
+function b = isoption(command, option) % --*-- Unitary tests --*--
 
 % Copyright (C) 2017 Dynare Team
 %
@@ -78,3 +78,21 @@ switch command
   otherwise
     error('x13:isoption: Unknown block!')
 end
+
+%@test:1
+%$ try
+%$     b = isoption('unicorn','horse sounds');
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$
+%$ T = all(t);
+%@eof:1
+
+%@test:2
+%$ b = isoption('arima','ar');
+%$ c = ~isoption('arima','unicorn');
+%$ t = [b;c];
+%$ T = all(t);
+%@eof:2

@@ -1,4 +1,4 @@
-function o = subsref(o, S)
+function o = subsref(o, S) % --*-- Unitary tests --*--
 
 % Overloads the subsref method.
 
@@ -94,3 +94,46 @@ switch S(1).type
   otherwise
     error('x13:: I do not understand what you are asking for!')
 end
+
+%@test:1
+%$ t = zeros(1,5);
+%$ o = x13();
+%$
+%$ try
+%$     o(arima);
+%$     t(1) = false;
+%$ catch
+%$     t(1) = true;
+%$ end
+%$
+%$ try
+%$     o.unicorn;
+%$     t(2) = false;
+%$ catch
+%$     t(2) = true;
+%$ end
+%$
+%$ try
+%$     o.x11('onearg','onevalue','twoargs');
+%$     t(3) = false;
+%$ catch
+%$     t(3) = true;
+%$ end
+%$
+%$ try
+%$     o.x11('unicorn','yes please');
+%$     o.x11.unicorn;
+%$     t(4) = false;
+%$ catch
+%$     t(4) = true;
+%$ end
+%$
+%$ try
+%$     o.print.unicorn;
+%$     t(5) = false;
+%$ catch
+%$     t(5) = true;
+%$ end
+%$
+%$ T = all(t);
+%@eof:1
