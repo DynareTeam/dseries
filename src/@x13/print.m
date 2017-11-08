@@ -405,7 +405,7 @@ fclose(fid);
 %$     o.run(); % necessary to invoke alphanumeric "basename"
 %$     o.print();
 %$
-%$     text = fileread(sprintf('%$s.spc',o.results.name));
+%$     text = fileread(sprintf('%s.spc',o.results.name));
 %$     comm = o.commands;
 %$
 %$     for i = 1:numel(comm)

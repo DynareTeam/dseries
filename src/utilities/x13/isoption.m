@@ -93,6 +93,6 @@ end
 %@test:2
 %$ b = isoption('arima','ar');
 %$ c = ~isoption('arima','unicorn');
-%$
-%$ T = all([b;c]);
+%$ t = [b;c];
+%$ T = all(t);
 %@eof:2
