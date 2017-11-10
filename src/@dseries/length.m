@@ -1,4 +1,4 @@
-function length(o)
+function length(o) % --*-- Unitary tests --*--
 
 % Overloads size function.
 

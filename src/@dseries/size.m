@@ -1,4 +1,4 @@
-function varargout = size(o, varargin)
+function varargout = size(o, varargin) % --*-- Unitary tests --*--
 
 % Overloads size function.
 
