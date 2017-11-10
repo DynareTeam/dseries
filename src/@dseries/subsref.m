@@ -85,6 +85,9 @@ switch S(1).type
       case 'freq'
         % Returns an integer characterizing the data frequency (1, 4, 12 or 52)
         B = A.dates.freq;
+      case 'length'
+        error(['dseries::subsref: we do not support the length operator on ' ...
+               'dseries. Please use ''nobs'' or ''vobs''']);
       case 'save'                                                        
         % Save dseries object on disk (default is a mat file).
         B = NaN;
