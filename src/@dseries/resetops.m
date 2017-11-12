@@ -1,6 +1,6 @@
-function p = struct(o)
+function o = resetopts(o, ops)
 
-% Converts dseries object to structure.
+% Redefine ops member.
 
 % Copyright (C) 2017 Dynare Team
 %
@@ -19,9 +19,4 @@ function p = struct(o)
 % You should have received a copy of the GNU General Public License
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
-warning('off', 'MATLAB:structOnObject');
-
-p = struct(o);
-p.dates = struct(p.dates);
-
-warning('on', 'MATLAB:structOnObject');
+o.ops = ops;

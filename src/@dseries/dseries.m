@@ -98,6 +98,8 @@ methods
                 o.dates = dates(1,1):dates(1,1)+(nobs(o)-1);
                 o.ops = cell(length(o.name), 1);
                 o.tags = struct();
+            elseif isstruct(varargin{1})
+                o = struct2dseries(varargin{1});
             end
           case  {2,3,4}
             if isequal(nargin,2) && ischar(varargin{1}) && isdates(varargin{2})
