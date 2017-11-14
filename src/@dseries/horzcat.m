@@ -43,7 +43,7 @@ switch nargin
   case 1
     o = varargin{1};
   otherwise
-    o = concatenate(varargin{1}, varargin{2});
+    o = concatenate(copy(varargin{1}), copy(varargin{2}));
     if nargin>2
         o = horzcat(o, varargin{3:end});
     end
