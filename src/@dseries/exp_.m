@@ -8,7 +8,7 @@ function o = exp_(o) % --*-- Unitary tests --*--
 % OUTPUTS
 % - o [dseries]
 
-% Copyright (C) 2015-2017 Dynare Team
+% Copyright (C) 2015-2018 Dynare Team
 %
 % This file is part of Dynare.
 %
@@ -31,7 +31,7 @@ for i=1:vobs(o)
     if isempty(o.ops{i})
         o.ops(i) = {['exp(' o.name{i} ')']};
     else
-        o.ops(i) = {['exp(' o.ops{i} ')'];}
+        o.ops(i) = {['exp(' o.ops{i} ')']};
     end
 end
 
