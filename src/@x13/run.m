@@ -22,8 +22,16 @@ function run(o, basename)
 % Print spc file.
 basename = o.print();
 
+% Get expected path to X13 binary.
+x13b = select_x13_binary();
+
+% Test for the existence of the binary.
+if ~exist(x13b, 'file')
+    error('X13 is not available, so we cannot run the generated spc file.')
+end
+
 % Run spc file.
-[~, ~] = system(sprintf('%s %s', select_x13_binary(), basename));
+[~, ~] = system(sprintf('%s %s', x13b, basename));
 
 o.results.name = basename; % Base name of the generated files.
 

@@ -78,8 +78,13 @@ end
 
 % Install X13 binaries
 opath = pwd();
-cd([dseries_src_root '/../externals/x13'])
-installx13();
+try
+    cd([dseries_src_root '/../externals/x13'])
+    installx13();
+catch
+    warning('X13 is not available!')
+    p(strmatch('/utilities/x13', p, 'exact')) = [];
+end
 cd(opath);
 
 % Set path

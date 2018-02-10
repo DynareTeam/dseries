@@ -40,5 +40,5 @@ elseif ispc()
         x13_binary = sprintf('%s%s%s%s', x13_binary, '32', filesep(), 'x13.exe');
     end
 else
-    error('X13 binary is not yet available for this plateform')
+    error('X13 binary is not available for this plateform')
 end
