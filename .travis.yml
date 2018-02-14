@@ -10,7 +10,6 @@ cache:
 
 before_install:
   - brew update
-  - brew tap homebrew/science
   - brew install ccache
   - brew install octave
 
