@@ -229,13 +229,9 @@ switch S(1).type
         end
         % Extract a subsample using a dates object
         [junk,tdx] = intersect(A.dates.time,Dates.time,'rows');
-        B = dseries();
-        B.data = A.data(tdx,:);
-        B.name = A.name;
-        B.tex  = A.tex;
-        B.dates = A.dates(tdx);
-        B.ops = A.ops;
-        B.tags = A.tags;
+        B = copy(A);
+        B.data = B.data(tdx,:);
+        B.dates = B.dates(tdx);
     elseif isvector(S(1).subs{1}) && all(isint(S(1).subs{1}))
         error('dseries::subsref: It is not possible to select observations with a vector of integers. You have to index with a dates object instead!');
     else
