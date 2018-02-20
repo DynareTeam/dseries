@@ -11,7 +11,7 @@ function [o, p] = align_(o, p) % --*-- Unitary tests --*--
 % - o [dseries]
 % - p [dseries]
 
-% Copyright (C) 2013-2017 Dynare Team
+% Copyright (C) 2013-2018 Dynare Team
 %
 % This file is part of Dynare.
 %
@@ -32,28 +32,21 @@ if ~isequal(frequency(o),frequency(p))
     error(['dseries::align: ''' inputname(1) ''' and ''' inputname(2) ''' dseries objects must have common frequencies!'])
 end
 
-init = min(firstdate(o),firstdate(p));
-last = max(lastdate(o),lastdate(p));
-
 if isempty(intersect(o.dates,p.dates))
     error(['dseries::align: ''' inputname(1) ''' and ''' inputname(2) ''' dseries object must have at least one common date!'])
 end
 
-o_init = init;
-p_init = init;
-o_last = last;
-p_last = last;
+init = min(firstdate(o),firstdate(p));
+last = max(lastdate(o),lastdate(p));
 
 if firstdate(p)>init
     n = firstdate(p)-init;
     p.data = [NaN(n, vobs(p)); p.data];
-    p_init = init;
 end
 
 if firstdate(o)>init
     n = firstdate(o)-init;
     o.data = [NaN(n, vobs(o)); o.data];
-    o_init = init;
 end
 
 if lastdate(p)<last
