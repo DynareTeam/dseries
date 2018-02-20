@@ -59,8 +59,8 @@ if lastdate(o)<last
     o.data = [o.data; NaN(n, vobs(o))];
 end
 
-o.dates = o_init:o_init+(nobs(o)-1);
-o.dates = o_init:o_init+(nobs(o)-1);
+o.dates = init:init+(nobs(o)-1);
+p.dates = init:init+(nobs(p)-1);
 
 %@test:1
 %$ % Define a datasets.
