@@ -90,6 +90,7 @@ p.dates = init:init+(nobs(p)-1);
 %$   t(3) = dassert(ts1.init,ts2.init);
 %$   t(4) = dassert(ts1.data,[NaN(3,3); A], 1e-15);
 %$   t(5) = dassert(ts2.data,[B; NaN(4,2)], 1e-15);
+%$   t(6) = dassert(ts1.dates, ts2.dates);
 %$ end
 %$ T = all(t);
 %@eof:1
@@ -122,6 +123,7 @@ p.dates = init:init+(nobs(p)-1);
 %$   t(3) = dassert(ts1.init,ts2.init);
 %$   t(4) = dassert(ts1.data,A, 1e-15);
 %$   t(5) = dassert(ts2.data,[B; NaN(1,2)], 1e-15);
+%$   t(6) = dassert(ts1.dates, ts2.dates);
 %$ end
 %$ T = all(t);
 %@eof:2
@@ -154,6 +156,7 @@ p.dates = init:init+(nobs(p)-1);
 %$   t(3) = dassert(ts1.init,ts2.init);
 %$   t(4) = dassert(ts1.data,A, 1e-15);
 %$   t(5) = dassert(ts2.data,[B; NaN(1,2)], 1e-15);
+%$   t(6) = dassert(ts1.dates, ts2.dates);
 %$ end
 %$ T = all(t);
 %@eof:3
