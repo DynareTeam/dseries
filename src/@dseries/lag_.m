@@ -50,8 +50,14 @@ if p<0
     error('dseries:WrongInputArguments','Second input argument must be non negative! Use lead method instead.')
 end
 
+% Check that p is an integer
 if ~isint(p)
     error('dseries:WrongInputArguments','Second input argument must be an integer!')
+end
+
+% Return without changing anything if p==0
+if ~p
+    return
 end
 
 % Update data member
@@ -82,3 +88,21 @@ end
 %$
 %$ T = all(t);
 %@eof:1
+
+%@test:2
+%$ try
+%$     data = transpose(0:1:50);
+%$     ts = dseries(data,'1950Q1');
+%$     ts.lag_(0);
+%$     t(1) = 1;
+%$ catch
+%$     t(1) = 0;
+%$ end
+%$
+%$ if t(1)
+%$     t(2) = dassert(ts.data,data,1e-15);
+%$     t(3) = isempty(ts.ops)
+%$ end
+%$
+%$ T = all(t);
+%@eof:2
