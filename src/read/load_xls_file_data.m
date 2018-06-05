@@ -45,13 +45,9 @@ if nargin<3 || isempty(range)
 end
 
 if isoctave && ~user_has_octave_forge_package('io')
-    try
-        pkg load io
-    catch
-        error(['The io package is required to read CSV files from Octave. ' ...
-               'It can be installed by running the following from the Octave ' ...
-               ' command line: pkg install -forge io']);
-    end
+    error(['The io package is required to read CSV files from Octave. ' ...
+           'It can be installed by running the following from the Octave ' ...
+           ' command line: pkg install -forge io']);
 end
 
 % Check file extension.

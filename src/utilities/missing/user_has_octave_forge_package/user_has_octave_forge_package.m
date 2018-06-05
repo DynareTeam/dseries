@@ -20,4 +20,11 @@ function [hasPackage] = user_has_octave_forge_package(package)
 
 [desc,flag] = pkg('describe', package);
 
-hasPackage = isequal(flag{1,1}, 'Loaded');
+if isequal(flag{1,1}, 'Not installed')
+    hasPackage = 0;
+else
+    if isequal(flag{1,1}, 'Not loaded')
+        pkg('load', package);
+    end
+    hasPackage = 1;
+end
