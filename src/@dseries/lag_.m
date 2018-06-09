@@ -65,9 +65,13 @@ o.data = [NaN(p, vobs(o));  o.data(1:end-p,:)];
 
 for i=1:vobs(o)
     if isempty(o.ops)
-        o.ops(i) = {sprintf('lag(%s, %s)', o.name{i}, p)};
+        o.ops(i) = {sprintf('lag(%s, %s)', o.name{i}, int2str(p))};
     else
-        o.ops(i) = {sprintf('lag(%s, %s)', o.ops{i}, p)};
+        if isempty(o.ops{i})
+            o.ops(i) = {sprintf('lag(%s)', int2str(p))};
+        else
+            o.ops(i) = {sprintf('lag(%s, %s)', o.ops{i}, int2str(p))};
+        end
     end
 end
 
@@ -101,7 +105,7 @@ end
 %$
 %$ if t(1)
 %$     t(2) = dassert(ts.data,data,1e-15);
-%$     t(3) = isempty(ts.ops)
+%$     t(3) = isempty(ts.ops{1});
 %$ end
 %$
 %$ T = all(t);
