@@ -96,9 +96,7 @@ end
 %$ end
 %$
 %$ if t(1)
-%$     t(2) = dassert(ts.tex,{'Output','\\Delta Y_t','\\theta_{-1}'});
-%$     t(3) = size(ts.tex, 1)==3;
-%$     t(3) = size(ts.tex, 2)==1;
+%$     t(2) = dassert(ts.tex,{'Output';'\\Delta Y_t';'\\theta_{-1}'});
 %$ end
 %$
 %$ T = all(t);

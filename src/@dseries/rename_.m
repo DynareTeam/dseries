@@ -107,9 +107,7 @@ end
 %$ end
 %$
 %$ if t(1)
-%$     t(2) = dassert(ts.name, {'Dora', 'The', 'Explorer'});
-%$     t(3) = size(ts.name, 1)==3;
-%$     t(4) = size(ts.name, 2)==1;
+%$     t(2) = dassert(ts.name, {'Dora'; 'The'; 'Explorer'});
 %$ end
 %$
 %$ T = all(t);
