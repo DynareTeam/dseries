@@ -76,6 +76,10 @@ if ~exist('one_sided_hp_filter','file')
     p{end+1} = '/utilities/missing/one_sided_hp_filter';
 end
 
+if ~exist('isoctave','file')
+    p{end+1} = '/utilities/missing/isoctave';
+end
+
 % Install X13 binaries
 opath = pwd();
 try
