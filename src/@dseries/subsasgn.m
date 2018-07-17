@@ -513,6 +513,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
@@ -549,6 +550,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
@@ -582,6 +584,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
@@ -623,6 +626,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
@@ -664,6 +668,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
@@ -702,6 +707,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
@@ -740,6 +746,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
@@ -778,6 +785,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
@@ -816,6 +824,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
@@ -942,6 +951,7 @@ end
 %$ if isoctave()
 %$     t(1) = 1;
 %$     T = all(t);
+%$     LOG = NaN;
 %$     return
 %$ end
 %$
