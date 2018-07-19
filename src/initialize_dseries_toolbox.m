@@ -1,3 +1,5 @@
+function initialize_dseries_toolbox(installdependencies)
+
 % Copyright (C) 2015-2017 Dynare Team
 %
 % This code is free software: you can redistribute it and/or modify
@@ -13,18 +15,26 @@
 % You should have received a copy of the GNU General Public License
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
+if ~nargin
+    installdependencies = false;
+end
+
 % Check that the dates module is available.
 try
     initialize_dates_toolbox;
 catch
-    urlwrite('https://github.com/DynareTeam/dates/archive/master.zip','master.zip');
-    warning('off','MATLAB:MKDIR:DirectoryExists')
-    mkdir('../externals')
-    warning('on','MATLAB:MKDIR:DirectoryExists')
-    unzip('master.zip','../externals')
-    delete('master.zip')
-    addpath([pwd() '/../externals/dates-master/src'])
-    initialize_dates_toolbox;
+    if installdependencies
+        urlwrite('https://github.com/DynareTeam/dates/archive/master.zip','master.zip');
+        warning('off','MATLAB:MKDIR:DirectoryExists')
+        mkdir('../externals')
+        warning('on','MATLAB:MKDIR:DirectoryExists')
+        unzip('master.zip','../externals')
+        delete('master.zip')
+        addpath([pwd() '/../externals/dates-master/src'])
+        initialize_dates_toolbox;
+    else
+        error('Missing dependency: dates module is not available.')
+    end
 end
 
 % Get the path to the dseries toolbox.
@@ -90,3 +100,5 @@ cd(opath);
 % Set path
 P = cellfun(@(c)[dseries_src_root(1:end-1) c], p, 'uni', false);
 addpath(P{:});
+
+assignin('caller', 'dseries_src_root', dseries_src_root);

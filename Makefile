@@ -5,7 +5,7 @@ all: check-octave check-matlab
 
 check-octave:
 	@cd tests ;\
-	$(OCTAVE) --no-init-file --silent --no-history runalltests.m
+	$(OCTAVE) --no-init-file --silent --no-history --eval "runalltests(true)"
 
 check-matlab:
 	@$(MATLAB)  -nosplash -nodisplay -r "cd tests; runalltests; quit"

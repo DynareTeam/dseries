@@ -1,3 +1,5 @@
+function runalltests(installdependencies)
+
 % Copyright (C) 2015-2017 Dynare Team
 %
 % This code is free software: you can redistribute it and/or modify
@@ -13,6 +15,10 @@
 % You should have received a copy of the GNU General Public License
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
+if ~nargin
+    installdependencies = false;
+end
+
 opath = path();
 
 system('rm -f failed');
@@ -24,15 +30,19 @@ install_unit_test_toolbox = false;
 try
     initialize_unit_tests_toolbox;
 catch
-    urlwrite('https://github.com/DynareTeam/m-unit-tests/archive/master.zip','master.zip');
-    warning('off','MATLAB:MKDIR:DirectoryExists');
-    mkdir('../externals');
-    warning('on','MATLAB:MKDIR:DirectoryExists');
-    unzip('master.zip','../externals');
-    delete('master.zip');
-    addpath([pwd() '/../externals/m-unit-tests-master/src']);
-    initialize_unit_tests_toolbox;
-    install_unit_test_toolbox = true;
+    if installdependencies
+        urlwrite('https://github.com/DynareTeam/m-unit-tests/archive/master.zip','master.zip');
+        warning('off','MATLAB:MKDIR:DirectoryExists');
+        mkdir('../externals');
+        warning('on','MATLAB:MKDIR:DirectoryExists');
+        unzip('master.zip','../externals');
+        delete('master.zip');
+        addpath([pwd() '/../externals/m-unit-tests-master/src']);
+        initialize_unit_tests_toolbox;
+        install_unit_test_toolbox = true;
+    else
+        error('Missing dependency: m-unit-tests module is not available.')
+    end
 end
 
 % Get path to the current script
@@ -40,16 +50,23 @@ unit_tests_root = strrep(which('runalltests'),'runalltests.m','');
 
 % Initialize the dseries module
 try
-    initialize_dseries_toolbox;
+    initialize_dseries_toolbox(installdependencies);
 catch
     addpath([unit_tests_root '../src']);
-    initialize_dseries_toolbox;
+    initialize_dseries_toolbox(installdependencies);
 end
 
 warning off
 
 if isoctave()
-    pkg install -forge io
+    if ~user_has_octave_forge_package('io')
+        if installdependencies
+            pkg install -forge io;
+            pkg load io;
+        else
+            error('Missing dependency: io package is not available.')
+        end
+    end
     more off;
     addpath([unit_tests_root 'fake']);
 end
@@ -60,8 +77,18 @@ report = run_unitary_tests_in_directory(tmp);
 
 delete('*.log');
 
-if install_unit_test_toolbox
+if exist('../externals/m-unit-tests-master')
+    if isoctave()
+        confirm_recursive_rmdir(0, 'local');
+    end
     rmdir('../externals/m-unit-tests-master','s');
+end
+
+if exist('../externals/dates-master')
+    if isoctave()
+        confirm_recursive_rmdir(0, 'local');
+    end
+    rmdir('../externals/dates-master','s');
 end
 
 if any(~[report{:,3}])
