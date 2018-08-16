@@ -30,7 +30,7 @@ if isnumeric(o) && (isscalar(o) ||  isvector(o))
     if ~isdseries(p)
         error('dseries::mrdivide: Second input argument must be a dseries object!')
     end
-    q = dseries(zeros(size(p.data)), p.firstdate);
+    q = copy(p);
     q.data = bsxfun(@rdivide, o, p.data);
     for i=1:vobs(q)
         if isscalar(o)
