@@ -24,7 +24,7 @@ try
     initialize_dates_toolbox;
 catch
     if installdependencies
-        urlwrite('https://github.com/DynareTeam/dates/archive/master.zip','master.zip');
+        urlwrite('https://git.dynare.org/Dynare/dates/-/archive/master/dates-master.zip','master.zip');
         warning('off','MATLAB:MKDIR:DirectoryExists')
         mkdir('../externals')
         warning('on','MATLAB:MKDIR:DirectoryExists')
