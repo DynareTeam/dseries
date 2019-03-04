@@ -59,7 +59,7 @@ function ts = dseries(varargin) % --*-- Unitary tests --*--
 %! @end deftypefn
 %@eod:
 
-% Copyright (C) 2011-2017 Dynare Team
+% Copyright (C) 2011-2019 Dynare Team
 %
 % This file is part of Dynare.
 %
@@ -77,6 +77,12 @@ function ts = dseries(varargin) % --*-- Unitary tests --*--
 % along with Dynare.  If not, see <http://www.gnu.org/licenses/>.
 
 if nargin>0 && ischar(varargin{1}) && isequal(varargin{1},'initialize')
+    return
+end
+
+try
+    ts = evalin('base','emptydseriesobject');
+catch
     ts = struct;
     ts.data  = [];
     ts.name  = {};
@@ -84,10 +90,7 @@ if nargin>0 && ischar(varargin{1}) && isequal(varargin{1},'initialize')
     ts.dates = dates();
     ts = class(ts,'dseries');
     assignin('base','emptydseriesobject',ts);
-    return
 end
-
-ts = evalin('base','emptydseriesobject');
 
 switch nargin
   case 0
@@ -145,6 +148,11 @@ switch nargin
         ts.name = default_name(vobs(ts));
         ts.tex = name2tex(ts.name);
         ts.dates = dates(1,1):dates(1,1)+(nobs(ts)-1);
+    elseif isstruct( varargin{1} )
+        ts.data  = varargin{1}.data;
+        ts.name  = varargin{1}.name;
+        ts.tex   = varargin{1}.tex;
+        ts.dates = dates( varargin{1}.dates );
     end
   case {2,3,4}
     if isequal(nargin,2) && ischar(varargin{1}) && isdates(varargin{2})
@@ -276,7 +284,7 @@ end
 %$ t = zeros(6,1);
 %$
 %$ try
-%$     [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data.m','dynseries_test_data.m');
+%$     [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data.m','dynseries_test_data.m');
 %$     if ~status
 %$         error()
 %$     end
@@ -302,7 +310,7 @@ end
 %$ t = zeros(6,1);
 %$
 %$ try
-%$     [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data.mat','dynseries_test_data.mat');
+%$     [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data.mat','dynseries_test_data.mat');
 %$     if ~status
 %$         error()
 %$     end
@@ -328,7 +336,7 @@ end
 %$ t = zeros(8,1);
 %$
 %$ try
-%$     [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data.csv','dynseries_test_data.csv');
+%$     [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data.csv','dynseries_test_data.csv');
 %$     if ~status
 %$         error()
 %$     end
@@ -424,9 +432,9 @@ end
 %@test:9
 %$ try
 %$     if isoctave()
-%$         [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data-1.xlsx','dynseries_test_data-1.xlsx');
+%$         [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data-1.xlsx','dynseries_test_data-1.xlsx');
 %$     else
-%$         [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data-1.xls','dynseries_test_data-1.xls');
+%$         [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data-1.xls','dynseries_test_data-1.xls');
 %$     end
 %$     if ~status
 %$         error()
@@ -459,9 +467,9 @@ end
 %@test:10
 %$ try
 %$     if isoctave()
-%$         [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data-2.xlsx','dynseries_test_data-2.xlsx');
+%$         [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data-2.xlsx','dynseries_test_data-2.xlsx');
 %$     else
-%$         [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data-2.xls','dynseries_test_data-2.xls');
+%$         [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data-2.xls','dynseries_test_data-2.xls');
 %$     end
 %$     if ~status
 %$         error()
@@ -494,9 +502,9 @@ end
 %@test:11
 %$ try
 %$     if isoctave()
-%$         [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data-3.xlsx','dynseries_test_data-3.xlsx');
+%$         [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data-3.xlsx','dynseries_test_data-3.xlsx');
 %$     else
-%$         [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data-3.xls','dynseries_test_data-3.xls');
+%$         [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data-3.xls','dynseries_test_data-3.xls');
 %$     end
 %$     if ~status
 %$         error()
@@ -529,9 +537,9 @@ end
 %@test:12
 %$ try
 %$     if isoctave()
-%$         [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data-4.xlsx','dynseries_test_data-4.xlsx');
+%$         [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data-4.xlsx','dynseries_test_data-4.xlsx');
 %$     else
-%$         [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data-4.xls','dynseries_test_data-4.xls');
+%$         [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data-4.xls','dynseries_test_data-4.xls');
 %$     end
 %$     if ~status
 %$         error()

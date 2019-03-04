@@ -45,7 +45,7 @@ function B = subsref(A, S) % --*-- Unitary tests --*--
 %! @end deftypefn
 %@eod:
 
-% Copyright (C) 2011-2017 Dynare Team
+% Copyright (C) 2011-2019 Dynare Team
 %
 % This file is part of Dynare.
 %
@@ -353,7 +353,7 @@ end
 %$ t = zeros(5,1);
 %$
 %$ try
-%$    [strfile, status] = urlwrite('http://www.dynare.org/Datasets/dseries/dynseries_test_data.csv','dynseries_test_data.csv');
+%$    [strfile, status] = urlwrite('https://www.dynare.org/Datasets/dseries/dynseries_test_data.csv','dynseries_test_data.csv');
 %$    if ~status
 %$        error()
 %$    end

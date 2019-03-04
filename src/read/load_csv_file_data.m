@@ -16,7 +16,7 @@ function [freq, init, data, varlist] = load_csv_file_data(file) % --*-- Unitary 
 %  names. Similarly, if the first column does not contain dates, then
 %  freq will be 1 and init will be year 1.
 
-% Copyright (C) 2012-2017 Dynare Team
+% Copyright (C) 2012-2019 Dynare Team
 %
 % This file is part of Dynare.
 %
@@ -199,7 +199,7 @@ varlist = strrep(varlist,'"','');
 
 %@test:1
 %$ % Download csv file with data.
-%$ urlwrite('http://www.dynare.org/Datasets/data_ca1_csv.csv','data_ca1_csv.csv');
+%$ urlwrite('https://www.dynare.org/Datasets/data_ca1_csv.csv','data_ca1_csv.csv');
 %$
 %$ % Instantiate a dseries from the data in the csv file.
 %$ try
